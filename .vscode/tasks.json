@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Angular: new project",
+      "type": "shell",
+      "command": "npx",
+      "args": ["-y", "@angular/cli@19", "new", "${input:projectName}", "--skip-git"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "projectName",
+      "type": "promptString",
+      "description": "Angular project name (e.g. day-02-directives)"
+    }
+  ]
+}

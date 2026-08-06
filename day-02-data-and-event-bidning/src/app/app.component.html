@@ -1,0 +1,8 @@
+<h1>
+  {{ welcomeMessage }}
+</h1>
+<div>
+  <p *ngFor="let item of names; let i=index">
+    {{ (i+1) + ". " + item }}
+  </p>
+</div>

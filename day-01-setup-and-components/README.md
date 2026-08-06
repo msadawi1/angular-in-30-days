@@ -577,7 +577,7 @@ export class Profile() {
 Notes:
 Component member variables are accessible by the template*, either inline or external.
 
-> *HTML templates don't live inside the generated bundle of the compiler. HTML templates don't really "access" the variables of the class during runtime. What happens instead is that Angular compiler takes the HTML template and the component and produces a renderer function, each template gets a unique renderer function. The renderer takes only the class instance (with its members) and produces the actual UI. The runtime in the browser only calls the renderer that produces the HTML using the class instance (for data), not the actual HTML template.
+> *HTML templates don't live inside the generated bundle of the compiler. HTML templates don't really "access" the variables of the class during runtime. What happens instead is that Angular compiler takes the HTML template and the class and produces a renderer function, each template gets a unique renderer function. The renderer takes only the class instance (with its members) and produces the actual UI. The runtime in the browser only calls the renderer that produces the HTML using the class instance (for data), not the actual HTML template.
 
 ### Composing Components
 
