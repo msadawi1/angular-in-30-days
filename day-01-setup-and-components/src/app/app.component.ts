@@ -7,6 +7,18 @@ import { Component } from '@angular/core';
   styleUrl: 'app.component.css'
 })
 export class AppComponent {
-  title = 'Angular Tutorial Day #1';
-  description = 'Setup, Architecture & Components'
+  count = 0;
+  toy = 0;
+
+  handleToyChange() {
+    this.toy++;
+  }
+
+  handleCountIncrement() {
+    this.count++;
+  }
+
+  handleCountDecrement() {
+    this.count--;
+  }
 }

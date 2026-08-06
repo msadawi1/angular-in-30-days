@@ -93,6 +93,11 @@ Filled in as I go. Each day links to its folder; each folder explains itself.
 
 Every day folder carries its own `README.md` so the code is never context-free. The template:
 
+Starting a project
+``` cli
+npx @angular/cli@19 new day-01
+```
+
 ```markdown
 # Day NN — <topic>
 
