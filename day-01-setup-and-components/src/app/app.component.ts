@@ -1,24 +1,13 @@
 import { Component } from '@angular/core';
+import { CounterComponent } from './counter/counter.component';
 
 // inline CSS/HTML take presednece
 @Component({
   selector: 'app-root',
+  imports: [CounterComponent],
   templateUrl: './app.component.html',
   styleUrl: 'app.component.css'
 })
 export class AppComponent {
-  count = 0;
-  toy = 0;
-
-  handleToyChange() {
-    this.toy++;
-  }
-
-  handleCountIncrement() {
-    this.count++;
-  }
-
-  handleCountDecrement() {
-    this.count--;
-  }
+  
 }

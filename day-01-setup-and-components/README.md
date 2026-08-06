@@ -579,7 +579,33 @@ Component member variables are accessible by the template*, either inline or ext
 
 > *HTML templates don't live inside the generated bundle of the compiler. HTML templates don't really "access" the variables of the class during runtime. What happens instead is that Angular compiler takes the HTML template and the component and produces a renderer function, each template gets a unique renderer function. The renderer takes only the class instance (with its members) and produces the actual UI. The runtime in the browser only calls the renderer that produces the HTML using the class instance (for data), not the actual HTML template.
 
+### Composing Components
 
+- You build an application by composing multiple components together.
+- From Angular 19, components are standalone by default. Before that, components couldn't function without being declared in an Angular module. (NgModule)
+- NgModules are still supported in Angular 19+ but aren't the default (default is standalone componenst)
+
+- To import and use a component inside another, you need to:
+1. In your component's TypeScript file, add an import statement for the component you want to use.
+2. In your @Component decorator, add an entry to the imports array for the component you want to use.
+3. In your component's template, add an element that matches the selector of the component you want to use.
+
+``` ts
+// user-profile.ts
+import {ProfilePhoto} from 'profile-photo.ts';
+@Component({
+  selector: 'user-profile',
+  imports: [ProfilePhoto],
+  template: `
+    <h1>User profile</h1>
+    <profile-photo /> <!-- use components by appending their selector tag in the template -->
+    <p>This is the user profile page</p>
+  `,
+})
+export class UserProfile {
+  // Component behavior is defined in here
+}
+```
 
 ## Summary
 
