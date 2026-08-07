@@ -1,3 +1,13 @@
-<h1 appTextHighlight>
-    {{ title }}
-</h1>
+<div>
+    @if (isSignedIn) {
+        <h1>Welcome back!</h1>
+    } @else {
+        <h1>Please sign in.</h1>
+    }
+    <button (click)="onSignIn()">Sign in</button>
+    <button (click)="onSignOut()">Sign out</button>
+
+    @for(user of users; track user.id) {
+        <h3>{{ user.name }}</h3>
+    }
+</div>
