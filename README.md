@@ -18,7 +18,7 @@ A day-by-day record of going from React/TypeScript to a production Angular 19 + 
 
 ## Why this repo exists
 
-I have one year of writing frontends in React and TypeScript. I am willing to join a team that runs an **Angular 19 codebase inside an Nx monorepo**, with **multiple portals in one workspace** and API services **generated from an OpenAPI specification**.
+I am willing to join a team that runs an **Angular 19 codebase inside an Nx monorepo**, with **multiple portals in one workspace** and API services **generated from an OpenAPI specification**.
 
 ## The one rule
 
