@@ -2,13 +2,15 @@
 
 ## Signals
 
-- A signal is a wrapper around an instance member (either simple or complex DS) that notifies consumers when a changed to the value has happened. 
+- A signal is a wrapper around an instance member (either simple or complex DS) that notifies consumers when a changed to the value has happened.
 - Signals are read using getter functions e.g. `value()`.
 - Signals are either read-write or read-only.
 
+> Note that it's cleaner to use getters for dynamically calculated template values like `{{ index + 1 }} {{list.item}}`, it would be better to make a `get formattedListItem()` method.
+
 ### Why Signals?
 
-- Signals help Angular detect changes in a component when its value changes. Rather than relying on `zone.js` to monkey-patch the async APIs of the browser to detect when something has happened, Angular can know where that change has happened using signals, avoiding full-tree scan for changes. 
+- Signals help Angular detect changes in a component when its value changes. Rather than relying on `zone.js` to monkey-patch the async APIs of the browser to detect when something has happened, Angular can know where that change has happened using signals, avoiding full-tree scan for changes.
 
 - Using the following configuration lets Angular 19 update the UI only when a signal value has changed. Changing the component's instance variables (using events) won't trigger a UI change.
 ``` ts
@@ -41,11 +43,11 @@
 - Computed signals are read-only, and they get their initail value from other signals.
 - Computer signals are defined using the `computed()` function.
 
-``` ts 
+``` ts
 const count: WritableSignal<number> = signal(0);
 ```
 
-- Writable signals (`WritableSignal`) provide two methods to update thier value. 
+- Writable signals (`WritableSignal`) provide two methods to update thier value.
 
 1. .set(): assigns a value directly
 2. .update(): assigns a value but lets you access the previous signal value
@@ -70,12 +72,12 @@ count.update(value => value + 1);
 - Computed values are both lazy-evaluated and memoized (only evaluate the value when value is first read)
 - If you then change `count`, Angular knows that `doubleCount`'s cached value is no longer valid, and the next time you read `doubleCount` its new value will be calculated.
 
-``` ts 
+``` ts
 const count: WritableSignal<number> = signal(0);
 const doubleCount: Signal<number> = computed(() => count() * 2);
 ```
 
-> IMPORTANT Note: computed signals dependency array is dynamic, only read dependency signals perform recalculation. 
+> IMPORTANT Note: computed signals dependency array is dynamic, only read dependency signals perform recalculation.
 
 ``` ts
 const showCount = signal(false);
@@ -89,7 +91,7 @@ const conditionalCount = computed(() => {
 });
 ```
 - Here, if `showCount` is `false`, changing `count` doesn't perform recalculation of the computed signal, becuase the dependency's branch is not reached.
-- If `showCount` becomes `true`, then changing `count` perform signal recalculation. 
+- If `showCount` becomes `true`, then changing `count` perform signal recalculation.
 
 ### Effects
 
@@ -139,7 +141,7 @@ This is why `computed()` and `linkedSignal()` both take functions, not values.
 const selectedTab = linkedSignal(() => defaultTab());
 ```
 - Recomputes whenever a signal read inside the callback changes (like `computed`)
-- Still **settable**, unlike `computed`: `selectedTab.set('tab2')` 
+- Still **settable**, unlike `computed`: `selectedTab.set('tab2')`
 - Catch: any manual `.set()` is **wiped out** the next time the dependency changes — recompute always overwrites
 
 **Advanced form** — conditional reset, using the previous value

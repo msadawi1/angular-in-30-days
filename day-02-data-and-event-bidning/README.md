@@ -11,11 +11,12 @@
 
 1. Interpolation
 
-- Can be done using `{{ classFieldName }}`  inside the HTML template
+- Can be done using `{{ classFieldName }}`  inside the HTML template, preferred for string interpolation inside element tags
 
-2. Property/attribute Binding
+2. Property Binding
 
-- Can be done using `[attributeName]="classFieldName"` on the element
+- Can be done using `[propertyName]="classFieldName"` on the element, preferred when using a variable inside an HTML property/attribute
+> Note: Angular bind the value to the underlying DOM object not the HTML attribute, binding to the `src` property also sets the HTML attribute `src` because they match. However, if you try `aria-label`, binding won't work because Angular searches for a aria-label proprty which doesn't exist. You can fix that by binding to the attribute directly by explicitly mentionting its an attribute: `[attr.aria-label]` rather than `[aria-label]`.
 
 ### Event Binding (one-way)
 
