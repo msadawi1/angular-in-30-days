@@ -98,3 +98,50 @@ export class UserComponent {
 - This includes `ngModel` and `ngSubmit`. First is used for two-way binding (discussed earlier)
 - FormsModule prevents the browser's default behavior when submitting a form in a `<form>` tag (prevent sending a request because it's handled in the client side)
 - We can handle form submission by binding `ngSubmit` property on the form element to a handler.
+
+## Content Projection
+
+- You can create components that act as containers for other components using content projection, which is using `ng-content` element.
+- The DOM of the wrapped component will replace `<ng-content>` in the wrapper.
+- You can provide a default value that acts as a fallback if no content is provided in the wrapper
+
+> Note: ng-content is processed at build-time, so they can't be manipulated during runtime
+
+E.g. app-card
+``` html
+<div>
+    <ng-content>
+        Default Card
+    </ng-content>
+</div>
+```
+
+- Usage:
+``` html
+<app-card>
+  <article>
+    <h2>{{ task.title }}</h2>
+    <time>{{ task.dueDate }}</time>
+    <p>{{ task.summary }}</p>
+
+    <menu class="actions">
+      <button (click)="onComplete()">Complete</button>
+    </menu>
+  </article>
+</app-card>
+```
+
+- This applies app-card's template and styling to the wrapped content
+
+## Pipes for Transforming Data in Templates
+
+- Pipes in Angular let you define a transformation function that processes data before it is displayed in a template
+- Angular provides some built-in pipes such as `DatePipe` or `TitleCasePipe`
+- The pipe is a binary operator: `{{ name | titlecase }}`
+
+> You can apply multiple transformations to a value by using multiple pipe operators. Angular runs the pipes from left to right.
+
+- E.g. using the built-in DatePipe (needs importing)
+``` html
+<time>{{ task.dueDate | date: 'fullDate' }}</time>
+```
