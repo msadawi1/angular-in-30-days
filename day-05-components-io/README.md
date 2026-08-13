@@ -90,3 +90,11 @@ export class UserComponent {
   }
 }
 ```
+
+## Handling Forms: FormsModule
+
+- Importing `FormsModule` to a component introduces it to the set of directives provided by the forms module.
+
+- This includes `ngModel` and `ngSubmit`. First is used for two-way binding (discussed earlier)
+- FormsModule prevents the browser's default behavior when submitting a form in a `<form>` tag (prevent sending a request because it's handled in the client side)
+- We can handle form submission by binding `ngSubmit` property on the form element to a handler.
