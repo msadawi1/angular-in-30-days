@@ -16,7 +16,7 @@
     <!-- Table Body -->
     <tbody>
       <!-- Table Rows -->
-      @for (yearResult of results; track yearResult.year) {
+      @for (yearResult of results(); track yearResult.year) {
         <tr>
           <td>{{ yearResult.year }}</td>
           <td>{{ yearResult.valueEndOfYear | currency }}</td>
