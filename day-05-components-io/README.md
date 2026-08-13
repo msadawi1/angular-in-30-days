@@ -145,3 +145,29 @@ E.g. app-card
 ``` html
 <time>{{ task.dueDate | date: 'fullDate' }}</time>
 ```
+
+## Services
+
+- Services can be used to outsource components state management so that components become as simple as possible, mainly focusing on UI flows rather than data flows.
+- Services are singletons by default in Angular, and are instantiated once, and accessible to components by dependency injection.
+- E.g. defining a service as injectable:
+
+``` ts
+@Injectable({
+  providedIn: 'root',
+})
+export class TasksService {
+}
+```
+
+- Then in any component that needs it:
+
+``` ts
+constructor(private tasksService: TasksService) {}
+```
+
+or
+
+``` ts
+private tasksService = inject(TasksService)
+```

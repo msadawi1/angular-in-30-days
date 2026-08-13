@@ -1,0 +1,30 @@
+@if (results === undefined) {
+  <p class="center">Please enter values to start calculation.</p>
+} @else {
+  <table>
+    <!-- Table Header -->
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Investement Value</th>
+        <th>Intereset(Year)</th>
+        <th>Total Interest</th>
+        <th>Invested Capital</th>
+      </tr>
+    </thead>
+
+    <!-- Table Body -->
+    <tbody>
+      <!-- Table Rows -->
+      @for (yearResult of results; track yearResult.year) {
+        <tr>
+          <td>{{ yearResult.year }}</td>
+          <td>{{ yearResult.valueEndOfYear | currency }}</td>
+          <td>{{ yearResult.interest | currency }}</td>
+          <td>{{ yearResult.totalInterest | currency }}</td>
+          <td>{{ yearResult.totalAmountInvested | currency }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
