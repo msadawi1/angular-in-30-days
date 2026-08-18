@@ -1,7 +1,8 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, output, ViewChild } from '@angular/core';
 import { ControlComponent } from '../../../shared/control/control.component';
 import { ButtonComponent } from '../../../shared/button/button.component';
 import { FormsModule } from '@angular/forms';
+import { Ticket } from '../ticket/ticket.model';
 
 @Component({
   selector: 'app-new-ticket',
@@ -12,8 +13,10 @@ import { FormsModule } from '@angular/forms';
 export class NewTicketComponent {
   @ViewChild('form') form?: ElementRef<HTMLFormElement>;
 
+  add = output<Pick<Ticket, 'title' | 'request'>>();
+
   onSubmit(title: string, request: string) {
-    console.log(title, request);
+    this.add.emit({ title, request });
     this.form?.nativeElement.reset();
   }
 }

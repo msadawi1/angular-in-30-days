@@ -226,3 +226,29 @@ export class ServerStatusComponent implements OnInit {
 - Howeever, if it's used on a component's element, that component's instance is returned.
 - This is useful when handling form submissions if we don't want to bind the form's values to a property inside the component.
 - It's not two-way binding, instead, it is a combination of a local template reference and unidirectional (one-way) event binding.
+
+## Custom Two-way Binding
+
+### Older Approach (<17)
+- To set up custom two-way binding for a component, you have to define two properties for it:
+1. Input: the data it recieves (data binding)
+2. Output: the event that will modify the data (event binding)
+
+If input's name is `data`, outupt will be `dataChange`, then you can use `[(data)]="parentData"` as two-way binding.
+What happens: parent passes parentData to child, child emits the output's function using dataChange to the parent which will then Angular use to handle the emitted event to change the parent's data.
+
+### Modern Approach (17<=, Signals)
+
+- In modern Angular, you can just use the `modern()` function from Angular core, which will define a child's property as a writable input (inputs are read-only by default). Which would allow the child to write data back to the parent without emitting events.
+
+``` ts
+class ChildComponent {
+  size = model.required<type>()
+
+  // Updating the signal's value will notify the parent and write back to the property that provided the data to the cild
+  onReset() {
+    this.size.set(...) // or .update
+  }
+}
+
+```
