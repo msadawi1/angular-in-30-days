@@ -1,4 +1,4 @@
-# Day 01 — Setup and Components
+# Setup and Components
 
 **Concepts:** Angular architecture & setting up a project
 **Time:** ~4

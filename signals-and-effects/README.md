@@ -1,4 +1,4 @@
-# Day 04 — Signals and Effect
+# Signals and Effects
 
 ## Signals
 

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "day-01-setup-and-env": {
+    "components-io": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/day-01-setup-and-env",
+            "outputPath": "dist/components-io",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "day-01-setup-and-env:build:production"
+              "buildTarget": "components-io:build:production"
             },
             "development": {
-              "buildTarget": "day-01-setup-and-env:build:development"
+              "buildTarget": "components-io:build:development"
             }
           },
           "defaultConfiguration": "development"

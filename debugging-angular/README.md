@@ -1,4 +1,4 @@
-# Day 06 - Debugging & DevTools
+# Debugging & DevTools
 
 ## Browser DevTools
 

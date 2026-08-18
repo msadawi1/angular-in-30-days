@@ -1,4 +1,4 @@
-# Day 02 — Data and Event Binding
+# Data and Event Binding
 
 **Concepts:** Data and event binding in Angular
 **Time:** ~5h

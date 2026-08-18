@@ -1,4 +1,4 @@
-# Day 06 - Components Deep Dive
+# Components Deep Dive
 
 ## When to split up components?
 

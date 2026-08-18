@@ -1,4 +1,4 @@
-# Day 03 — Custom Directives and Control Flow
+# Custom Directives and Control Flow
 
 ## Custom Attribuett Directives
 

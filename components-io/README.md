@@ -1,4 +1,4 @@
-# Day 05 - Components Input/Output
+# Components Input/Output
 
 - In Angular, you can define components to take inputs from their properties.
 
