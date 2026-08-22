@@ -11,6 +11,9 @@ A concept introduced by RxJS (3rd-party library that Angular uses) that handles 
 - Subscribing and destroying are done using lifecycle hooks.
 - RxJS also provides operators that can be applied to emitted observable values to transform data.
 
+## Why Observables? And how they work?
 
-
-
+- Observables are lazily-executed by default. Meaning that they are only called when they have one subscriber at least.
+- Observables return an object called a subsriber, which has three methods: next, complete, error.
+- Observables do an automatic clean up, similar to useEffect's cleanup return.
+- Observables handle streams of data, meaning: values arrive one at a time, by 
