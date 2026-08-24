@@ -47,3 +47,30 @@
 3. `touched` property, `ng-touched` class (user touched the input)
 
 ## Reactive Forms
+
+- The reactive form approach is driven from the component's class by defining the form as `FormGroup` with multiple properties of `FormControl`, which are the form inputs:
+1. Define the form in the class using `FormGroup` and `FormConrol` class objects
+2. Connect the template to the form using `formGroup` (for parent) and `formControlNme` (for inputs) using property binding
+3. Handle submission using `ngSubmit` event (available in `ReactiveFormsModule` as well)
+
+- While template-driven approach uses `FormsModule`, reactive approach uses `ReactiveFormsModule`
+
+### Validation
+
+- Adding validators to reactive form controls is simple, just use the `validators` property when instantiating the control instance in the options.
+- Validators are functions that either return null (if passed) or return an error if not passed.
+- Angular provide static popular validators in `Validators` from `@angular/forms`
+
+### Nested Form Groups
+
+- Reactive forms provide support for nesting form groups.
+- This is done simply by grouping related controls in a `FormGroup` value assigned to the root's form group property.
+- This is useful when grouping controls such as addresses, password & confirmation, day, month & year, etc.
+- You still need to assign a shared parent of the nested form controls to a form group (the related controls form group parent) in the template, using `formGroup` or `formGroupName`.
+
+### Form Arrays
+
+- We sometimes want to have a list of inputs related to a subject such as choose multiple options inputs.
+- Angular provides `FormArrays` that let us map form controls to form inputs related to the same subject.
+- `formControlName` of the different inputs thus will be the index of that control, not a name.
+- The parent of the inputs must have the `formArrayName` directive that takes the form array name's property.

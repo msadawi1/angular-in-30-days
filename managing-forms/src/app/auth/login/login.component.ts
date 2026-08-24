@@ -1,67 +1,86 @@
-import { afterNextRender, Component, DestroyRef, inject, viewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { debounceTime, of } from 'rxjs';
+
+const STORAG_KEY = 'login-form-input'
+
+function emailIsUnique(control: AbstractControl) {
+  if (control.value !== 'test@example.com') {
+    return of(null);
+  }
+
+  return of({ emailNotUnique: true });
+}
+
+const raw = window.localStorage.getItem(STORAG_KEY);
+let savedForm;
+if (raw) {
+  savedForm = JSON.parse(raw);
+}
+
+const savedEmail = savedForm.email;
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
-  form = viewChild.required<NgForm>('form');
+export class LoginComponent implements OnInit {
+  form = new FormGroup({
+    email: new FormControl(savedEmail, {
+      validators: [Validators.email, Validators.required],
+      asyncValidators: [emailIsUnique],
+    }),
+    password: new FormControl('', {
+      validators: [Validators.minLength(6), Validators.required],
+    }),
+  });
+
   destroyRef = inject(DestroyRef);
-  readonly STORAGE_KEY = 'login-form-input';
 
-  constructor() {
-    /**
-     * afterNextRender runs once the component has finished rendering for a single time only
-     * NgForm provide a valueChanges observable that pushes changed values to subscribers, subscribing
-     * to it gives us the latest values that we can use. The subscription is initialized inside afterNextRender
-     * because we want to subscribe only after the template is done rendering, not when the TS class is initialized.
-     *
-     * The observable interface `next` will register the callback and run it on every emitted value.
-     */
-    afterNextRender(() => {
-      let savedForm = window.localStorage.getItem(this.STORAGE_KEY);
-      let savedEmailInput = '';
-      if (savedForm) {
-        savedEmailInput = JSON.parse(savedForm).email;
-        setTimeout(() => {
-          this.form().setValue({
-            email: savedEmailInput,
-            password: '',
-          });
-        }, 1);
-      }
+  get emailInvalid() {
+    return (
+      this.form.controls.email.touched &&
+      this.form.controls.email.dirty &&
+      this.form.controls.email.invalid
+    );
+  }
 
-      const subscription = this.form()
-        .valueChanges?.pipe(debounceTime(500))
-        .subscribe({
-          next: (value) =>
-            window.localStorage.setItem(
-              this.STORAGE_KEY,
-              JSON.stringify({
-                email: value.email,
-              }),
-            ),
-        });
+  get passwordInvalid() {
+    return (
+      this.form.controls.password.touched &&
+      this.form.controls.password.dirty &&
+      this.form.controls.password.invalid
+    );
+  }
 
-      this.destroyRef.onDestroy(() => subscription?.unsubscribe());
+  ngOnInit(): void {
+    const subscription = this.form.valueChanges.pipe(debounceTime(500)).subscribe({
+      next: (value) => {
+        window.localStorage.setItem(
+          STORAG_KEY,
+          JSON.stringify({
+            email: value.email,
+          }),
+        );
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
     });
   }
 
-  onSubmit(formData: NgForm) {
-    if (formData.form.invalid) return;
-
-    console.log(formData.form);
-    const enteredEmail = formData.value.email;
-    const enteredPassword = formData.value.password;
-
-    console.log({
-      enteredEmail,
-      enteredPassword,
-    });
+  onSubmit() {
+    console.log(this.form.value.email);
+    console.log(this.form.value.password);
   }
 }
