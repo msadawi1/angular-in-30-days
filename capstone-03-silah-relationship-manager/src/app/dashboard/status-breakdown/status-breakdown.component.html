@@ -1,9 +1,7 @@
 <app-card>
   <div class="status-items">
-    <app-status />
-    <app-status />
-    <app-status />
-    <app-status />
-    <app-status />
+    @for (status of status_items; track $index) {
+      <app-status [statusData]="status"/>
+    }
   </div>
 </app-card>

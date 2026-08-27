@@ -2,13 +2,13 @@
   <div class="portfolio">
     <span class="circle-text"></span>
     <div class="person-info">
-      <span class="name">John Doe</span>
-      <span class="relationship">Immediate Family</span>
+      <span class="name">{{ person().name }}</span>
+      <span class="relationship">{{ person().relationshipType }}</span>
     </div>
   </div>
 
   <div class="contact">
-    <span class="overdue">4d overdue</span>
-    <span class="last-contacted">3 months ago</span>
+    <span class="overdue">{{ person().lastContactDate }}</span>
+    <span class="last-contacted">{{ person().lastContactDate }}</span>
   </div>
 </li>

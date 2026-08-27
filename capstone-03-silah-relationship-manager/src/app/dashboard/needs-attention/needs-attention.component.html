@@ -1,8 +1,9 @@
 <app-card variant="flush">
   <div class="persons">
-    <app-person />
-    <app-person />
-    <app-person />
-    <app-person />
+    @for (person of persons; track person.id) {
+      <app-person [person]="person" />
+    } @empty {
+      <p>You have no contacts at the moment.</p>
+    }
   </div>
 </app-card>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CardComponent } from '../../shared/ui/card/card.component';
 
 @Component({
@@ -7,4 +7,7 @@ import { CardComponent } from '../../shared/ui/card/card.component';
   templateUrl: './indicator.component.html',
   styleUrl: './indicator.component.css',
 })
-export class IndicatorComponent {}
+export class IndicatorComponent {
+  label = input.required<string>()
+  count = input.required<number>()
+}

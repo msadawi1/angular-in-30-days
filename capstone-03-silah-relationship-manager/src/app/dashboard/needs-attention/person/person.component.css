@@ -1,3 +1,19 @@
+:host(.overdue) {
+  --status-color: var(--color-status-overdue)
+}
+
+:host(.on-track) {
+  --status-color: var(--color-status-on-track)
+}
+
+:host(.due-soon) {
+  --status-color: var(--color-status-due-soon)
+}
+
+:host(.never-contacted) {
+  --status-color: var(--color-status-never-contacted)
+}
+
 li {
   list-style: none;
   display: flex;
@@ -38,7 +54,7 @@ li:hover {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background-color: var(--color-status-overdue);
+  background-color: var(--status-color);
 }
 
 .contact {
