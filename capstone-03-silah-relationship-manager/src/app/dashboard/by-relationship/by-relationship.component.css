@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.relationship-items {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 2rem;
+}
+
+@media (max-width: 40rem) {
+  .relationship-items {
+    grid-template-columns: 1fr;
+  }
+}

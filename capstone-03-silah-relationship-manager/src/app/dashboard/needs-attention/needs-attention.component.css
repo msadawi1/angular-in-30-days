@@ -1,0 +1,7 @@
+.persons > app-person {
+  display: block;
+}
+
+.persons > app-person + app-person {
+  border-top: 1px solid var(--color-rule);
+}

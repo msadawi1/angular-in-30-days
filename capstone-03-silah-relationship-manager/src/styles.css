@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'Source Sans 3', system-ui, sans-serif;
+
+  --color-canvas: #fafaf7;
+  --color-card: #ffffff;
+  --color-ink: #1c1917;
+  --color-ink-muted: #78716c;
+  --color-ink-faint: #a8a29e;
+  --color-rule: #e7e5e4;
+
+  --color-forest: #2c5f2e;
+  --color-forest-mid: #4a8c4c;
+  --color-forest-light: #eff6ef;
+  --color-forest-border: #a7c4a9;
+  --color-forest-dark: #1a3b1b;
+
+  /* Dashboard status category colors */
+  --color-status-overdue: #b94a48;
+  --color-status-overdue-border: #8f3634;
+  --color-status-overdue-light: #fbeeed;
+
+  --color-status-due-soon: #b7791f;
+  --color-status-due-soon-border: #8b5a17;
+  --color-status-due-soon-light: #fff7e6;
+
+  --color-status-on-track: #4a8c4c;
+  --color-status-on-track-border: #2c5f2e;
+  --color-status-on-track-light: #eff6ef;
+
+  --color-status-never-contacted: #78716c;
+  --color-status-never-contacted-border: #57534e;
+  --color-status-never-contacted-light: #f5f5f4;
+
+  --color-status-snoozed: #7c6f9f;
+  --color-status-snoozed-border: #5b4f7d;
+  --color-status-snoozed-light: #f3f0f8;
+
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-canvas);
+  background-image: radial-gradient(circle, rgb(120 85 45 / 9%) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+[role='button'] {
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}

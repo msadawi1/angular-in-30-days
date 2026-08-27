@@ -1,0 +1,58 @@
+li {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.1s ease-out;
+}
+
+li:hover {
+  background-color: var(--color-canvas);
+}
+
+.portfolio {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.person-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.relationship {
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+}
+
+.circle-text::before {
+  content: '';
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--color-status-overdue);
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.last-contacted {
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+}
+
+.overdue {
+  color: var(--color-status-overdue);
+  font-size: 0.8rem;
+}

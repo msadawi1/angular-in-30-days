@@ -1,0 +1,21 @@
+span,
+p {
+  display: block;
+  text-align: center;
+}
+
+span {
+  color: var(--color-ink-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+p {
+  margin: 0.5rem 0 0;
+  color: var(--color-ink);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}

@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+:host > div {
+  width: 100%;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+  background-color: var(--color-card);
+  color: var(--color-ink);
+}
+
+.default {
+  padding: 1rem;
+}
+
+.flush {
+  padding: 0;
+}

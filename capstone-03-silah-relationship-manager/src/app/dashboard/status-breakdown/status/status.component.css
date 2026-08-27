@@ -1,0 +1,42 @@
+:host {
+  --status-color: var(--color-status-on-track);
+  --status-border-color: var(--color-status-on-track-border);
+  --status-surface: var(--color-status-on-track-light);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--status-border-color);
+  border-radius: 0.625rem;
+  background-color: var(--status-surface);
+  color: var(--color-ink);
+  font-size: 0.9375rem;
+  line-height: 1.25;
+}
+
+.circle-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--status-border-color);
+  font-weight: 500;
+}
+
+.circle-text::before {
+  content: '';
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--status-color);
+}
+
+:host > span:last-child {
+  color: var(--status-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
