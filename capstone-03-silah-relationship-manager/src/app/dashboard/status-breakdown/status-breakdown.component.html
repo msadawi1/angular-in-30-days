@@ -1,6 +1,6 @@
 <app-card>
   <div class="status-items">
-    @for (status of status_items; track $index) {
+    @for (status of statusItems(); track $index) {
       <app-status [statusData]="status"/>
     }
   </div>

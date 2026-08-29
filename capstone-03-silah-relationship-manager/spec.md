@@ -40,8 +40,6 @@ Single user, own device. No multi-user, sharing, or collaboration. No authentica
 - **US-12** — As a user, I want to control whether and when notifications fire, so that the app doesn't become noise I ignore.
 
 **Staying honest**
-- **US-13** — As a user, I want to snooze someone temporarily, so that "I'm seeing them at a wedding next week" doesn't show as neglect and doesn't force me to fake a contact log.
-- **US-14** — As a user, I want to archive a person, so that I stop being reminded without deleting our history.
 - **US-15** — As a user, I want to see how many people I'm currently behind on, so that I have a single signal of how I'm doing.
 
 **Finding people**
@@ -66,7 +64,7 @@ Single user, own device. No multi-user, sharing, or collaboration. No authentica
 
 ### UC-2: Review who needs attention
 - **Trigger:** User opens the app, or taps a notification.
-- **Precondition:** ≥1 non-archived person exists.
+- **Precondition:** ≥1 person exists.
 - **Main flow:**
   1. App loads people and computes each one's status and urgency ratio.
   2. Dashboard shows overdue first (most urgent first), then never-contacted, then due-soon.
@@ -74,18 +72,16 @@ Single user, own device. No multi-user, sharing, or collaboration. No authentica
 - **Edge cases:**
   - Zero people → onboarding empty state prompting UC-1, not a blank screen.
   - Nobody overdue → positive confirmation state, not an empty list.
-  - Snoozed and archived people are excluded entirely.
 
 ### UC-3: Log a contact
 - **Trigger:** User taps "Log contact" from the list or the person's page.
-- **Precondition:** Person exists and is not archived.
+- **Precondition:** Person exists.
 - **Main flow:**
   1. User taps a contact type chip; date defaults to today.
   2. If it wasn't today, user taps a "when" chip (Today / Yesterday / A few days ago / About a week ago). An exact date picker exists but is collapsed behind "pick exact date."
   3. Notes are optional and never block saving.
   4. App saves the log and updates `lastContactDate`.
   5. Person's status recomputes; they leave the overdue list immediately.
-  6. Any active snooze is cleared — real contact supersedes a snooze.
 - **Edge cases:**
   - Backdated log older than the current `lastContactDate` → save for history, do **not** move `lastContactDate` backwards.
   - Future date → rejected.
@@ -122,7 +118,7 @@ type RelationshipType =
 type ContactType = 'call' | 'visit' | 'message' | 'other';
 
 type PersonStatus =
-  | 'never_contacted' | 'ok' | 'due_soon' | 'overdue' | 'snoozed';
+  | 'never_contacted' | 'ok' | 'due_soon' | 'overdue';
 
 interface Person {
   id: string;
@@ -135,8 +131,6 @@ interface Person {
   importantDates: ImportantDate[];
   initialContactEstimate: string | null; // ISO date from the add-flow chip; approximate
   lastContactDate: string | null;      // ISO date; null = never contacted
-  snoozedUntil: string | null;         // ISO date; null = not snoozed
-  archived: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -201,12 +195,10 @@ Evaluated in strict priority order — first match wins:
 
 | # | Condition | Status |
 |---|---|---|
-| 1 | `archived === true` | excluded from all views |
-| 2 | `snoozedUntil` is in the future | `snoozed` |
-| 3 | `lastContactDate === null` and `initialContactEstimate === null` | `never_contacted` |
-| 4 | `urgency > 1.0` | `overdue` |
-| 5 | `urgency > 0.8` | `due_soon` |
-| 6 | otherwise | `ok` |
+| 1 | `lastContactDate === null` and `initialContactEstimate === null` | `never_contacted` |
+| 2 | `urgency > 1.0` | `overdue` |
+| 3 | `urgency > 0.8` | `due_soon` |
+| 4 | otherwise | `ok` |
 
 **Two decisions worth understanding, because they're the design:**
 
@@ -215,7 +207,7 @@ Evaluated in strict priority order — first match wins:
 
 ## 2.4 Sorting and grouping
 
-Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) → `due_soon` (urgency desc). `ok` and `snoozed` are not shown on the dashboard; they live on the full people list.
+Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) → `due_soon` (urgency desc). `ok` is not shown on the dashboard; it lives on the full people list.
 
 ---
 
@@ -239,7 +231,6 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 
   Default selection is **Never contacted**, so skipping the question entirely is valid and does not misrepresent history.
 - **FR-1.5** Edit any field after creation.
-- **FR-1.6** Archive/unarchive a person. Archived people are excluded from dashboard, stats, notifications, and default list view; their logs are retained.
 - **FR-1.7** Hard-delete a person and cascade-delete their logs, behind an explicit confirmation.
 - **FR-1.8** Manage a variable-length list of important dates per person (add/remove).
 - **FR-1.9** A person's detail view states plainly which cadence source is in effect — "Follows Close Friend default (14 days)" vs "Custom: 10 days" — so the inheritance is never invisible.
@@ -248,7 +239,6 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 
 - **FR-2.1** Log a contact with type + date. Type is chosen by tapping a chip. Date defaults to today and is adjusted by tapping a "when" chip (Today / Yesterday / A few days ago / About a week ago); an exact date picker is available but collapsed. Future dates are rejected.
 - **FR-2.2** On save, set `lastContactDate` to the log date **only if** it is later than the current value.
-- **FR-2.3** Logging any contact clears an active snooze.
 - **FR-2.4** Display a person's logs newest-first. Notes are optional and never required to save.
 - **FR-2.5** Delete an individual log; afterwards recompute `lastContactDate` as `max(latest remaining log date, initialContactEstimate)`, or `null` if neither exists.
 
@@ -267,7 +257,6 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 
 - **FR-4.1** Dashboard shows grouped, sorted attention list per §2.4.
 - **FR-4.2** Each dashboard entry exposes a one-tap "log contact" that defaults to today + type `call`, saving without opening a dialog.
-- **FR-4.3** Snooze a person for a chosen duration (3/7/14/30 days) — chip selection, no date entry.
 - **FR-4.4** Stats bar: total active people, count overdue, count due soon, longest current neglect.
 - **FR-4.5** Search by name, debounced, server-side.
 - **FR-4.6** Filter by relationship type and by status; filters compose with search.
@@ -293,7 +282,7 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 - **NFR-4 — Errors are normalized** into a single shape before reaching any component, so no component ever branches on raw HTTP status codes.
 - **NFR-5 — Components never import `HttpClient`.** All network access lives in services.
 - **NFR-6 — Responsive down to 375px width.** The daily loop is a phone activity.
-- **NFR-7 — No typing on any fast path.** Adding a person, logging contact, and snoozing must each be completable with taps alone. Free text (name, notes) is confined to deliberate, non-urgent flows.
+- **NFR-7 — No typing on any fast path.** Adding a person and logging contact must each be completable with taps alone. Free text (name, notes) is confined to deliberate, non-urgent flows.
 
 ---
 
@@ -360,8 +349,7 @@ PeopleStore
     statusFilter: PersonStatus | 'all'
 
   Computed:
-    activePeople     → people minus archived
-    peopleWithStatus → activePeople mapped through §2.3, reading cadenceFor()
+    peopleWithStatus → people mapped through §2.3, reading cadenceFor()
                        from CadenceConfigService — so a settings change
                        recomputes every status automatically (FR-5.7)
     overdue          → filter status==='overdue', sort urgency desc
@@ -376,14 +364,12 @@ Components read computed signals and call store methods. They never mutate `peop
 ## 4.3 API surface (NestJS)
 
 ```
-GET    /api/people?search=&type=&includeArchived=
+GET    /api/people?search=&type=
 POST   /api/people
 GET    /api/people/:id
 PATCH  /api/people/:id
 DELETE /api/people/:id
 GET    /api/people/check-name?name=          → { exists: boolean }
-POST   /api/people/:id/snooze                → { days: number }
-POST   /api/people/:id/archive               → { archived: boolean }
 
 GET    /api/people/:id/logs
 POST   /api/people/:id/logs
@@ -394,7 +380,7 @@ PUT    /api/config/cadences                  → { overrides, applyToExisting: b
 DELETE /api/config/cadences                  → clear overrides (reset to factory)
 ```
 
-**Server responsibilities:** persistence, cascade delete, recomputing `lastContactDate` on log create/delete (FR-2.2, FR-2.5), rejecting future dates, clearing snooze on log create (FR-2.3), and — when `applyToExisting` is true — batch-updating only those people whose `customCadenceDays` is `null`.
+**Server responsibilities:** persistence, cascade delete, recomputing `lastContactDate` on log create/delete (FR-2.2, FR-2.5), rejecting future dates, and — when `applyToExisting` is true — batch-updating only those people whose `customCadenceDays` is `null`.
 
 **Server does NOT compute status** — that's client-side derived state.
 
@@ -436,7 +422,7 @@ Every entry below is justified by a requirement, not by the syllabus.
 | Interpolation, property, event binding | Throughout | — |
 | `@if` | Loading / error / empty triads | NFR-3 |
 | `@for` + `track` | People list (`track p.id`), timeline (`track log.id`), important dates array, cadence settings rows | FR-4.1, FR-5.1 |
-| `@switch` | Status rendering — each branch is genuinely *different markup*: overdue shows days + CTA, snoozed shows until-date + unsnooze, never-contacted shows "log first contact" | §2.3 |
+| `@switch` | Status rendering — each branch is genuinely *different markup*: overdue shows days + CTA, never-contacted shows "log first contact" | §2.3 |
 | Custom attribute directive | `appOverdueHighlight` — takes urgency, uses `ElementRef` + `inject` to set the card's accent | FR-4.1 |
 | Multi-slot projection | `<app-panel>` with `[panel-header]`, `[panel-actions]` slots, reused across detail/timeline/settings | — |
 | Extending built-in element | `button[appButton]` with variant/size inputs — every action button, including all chips | NFR-7 |
@@ -461,7 +447,7 @@ Every entry below is justified by a requirement, not by the syllabus.
 |---|---|
 | `input.required<T>()` | `PersonCard.person`, `ContactTimeline.personId`, `ChipGroup.options` |
 | Signal inputs (optional) | `Button.variant`, `StatusBadge.status` |
-| `output()` | `PersonCard`: `logContact`, `snooze`, `edit`, `archive` |
+| `output()` | `PersonCard`: `logContact`, `edit` |
 | `model()` | `SearchBar.value` and `ChipGroup.selected` — both genuine two-way: the parent needs to set/clear them programmatically while the child also writes to them |
 
 ### Services & DI
@@ -513,7 +499,7 @@ Hardcode an in-memory array of people. Build: `RELATIONSHIP_BASELINE` token, `Ca
 *This is the phase that proves you understand signals. Don't rush it.*
 
 ### Phase 2 — `linkedSignal`, effects, local persistence, cadence settings
-Add the cadence-override `linkedSignal`, the `localStorage` effect, snooze and archive, client-side search + filters, and the cadence settings screen with in-memory overrides.
+Add the cadence-override `linkedSignal`, the `localStorage` effect, client-side search + filters, and the cadence settings screen with in-memory overrides.
 **Done when:** editing a type default in Settings changes what new people pre-fill with, leaves existing people alone, and data survives a refresh.
 
 ### Phase 3 — Routing
@@ -539,5 +525,4 @@ Judgment calls this spec deliberately leaves to you:
 2. **Should `due_soon` fire notifications, or only `overdue`?** Earlier warning is more useful but risks notification fatigue.
 3. **Should the 0.8 due-soon threshold be user-configurable?** Configurable is flexible; fixed is one less setting to explain. Note that you've now added one settings screen — a second lever might be one too many.
 4. **Should contact *type* affect cadence?** Arguably a visit should count more than a text — but this adds real complexity to §2.3 and may not be worth it in v1.
-5. **Archive vs. delete in the UI** — should hard delete be exposed at all, or should archive be the only user-facing option with delete hidden in settings?
-6. **The "Longer ago" chip maps to a fixed −90 days.** For a 7-day cadence that's wildly overdue (urgency 12.8); for a 90-day colleague it's exactly at the line (urgency 1.0). An alternative is making the chips *relative* to the person's cadence ("about half a cycle ago", "a full cycle ago") — more accurate, less intuitive to read.
+5. **The "Longer ago" chip maps to a fixed −90 days.** For a 7-day cadence that's wildly overdue (urgency 12.8); for a 90-day colleague it's exactly at the line (urgency 1.0). An alternative is making the chips *relative* to the person's cadence ("about half a cycle ago", "a full cycle ago") — more accurate, less intuitive to read.

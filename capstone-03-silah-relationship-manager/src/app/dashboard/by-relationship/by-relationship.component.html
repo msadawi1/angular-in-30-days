@@ -1,7 +1,7 @@
 <app-card>
   <div class="relationship-items" aria-label="Relationship categories">
-    @for (count of relationshipCount; track $index) {
-      <app-relationship-item [label]="count.label" [count]="count.count" />
+    @for (relationship of countPerRelationship(); track $index) {
+      <app-relationship-item [label]="relationship.label" [count]="relationship.count" />
     }
   </div>
 </app-card>

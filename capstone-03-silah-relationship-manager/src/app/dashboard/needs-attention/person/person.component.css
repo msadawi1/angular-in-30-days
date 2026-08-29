@@ -61,10 +61,22 @@ li:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: center;
 }
 
 .last-contacted {
   color: var(--color-ink-faint);
+  font-size: 0.8rem;
+}
+
+.never-contacted {
+  color: var(--color-status-never-contacted);
+  font-size: 0.8rem;
+  justify-self: center;
+}
+
+.due-soon {
+  color: var(--color-status-due-soon);
   font-size: 0.8rem;
 }
 

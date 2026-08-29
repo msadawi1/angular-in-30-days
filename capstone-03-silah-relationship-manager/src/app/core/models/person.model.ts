@@ -1,21 +1,26 @@
 import { ImportantDate } from './important-date.model';
 import { Relationship } from './relationship.model';
+import { Status } from './status.model';
 
-type ContactInfo = {
-  email?: string;
-  phone?: string;
-};
-
+/**
+ * Mirrors the API's person resource. Deliberately hand-written rather than
+ * shared with the backend — the two projects couple over HTTP only.
+ *
+ * No `status` field: status is derived client-side per spec §2.3, so the API
+ * never sends one.
+ */
 export interface Person {
   id: string;
   name: string;
   relationshipType: Relationship;
-  contact: ContactInfo | null;
+  email: string | null;
+  phone: string | null;
   customCadenceDays: number | null; // null = follows the type default
   notes: string | null;
   importantDates: ImportantDate[];
-  initialContactEstimate: string | null; // ISO date from the add-flow chip; approximate
   lastContactDate: string | null; // ISO date; null = never contacted
-  createdAt: string;
-  updatedAt: string;
+  status: Status | null;
+  dueInDays: number | null; // cadence days remaining; negative once overdue
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
 }

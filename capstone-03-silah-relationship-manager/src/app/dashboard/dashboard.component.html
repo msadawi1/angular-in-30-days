@@ -1,14 +1,22 @@
 <h2>Overview</h2>
 
 <div class="indicators">
-  <app-indicator label="People Tracked" [count]="12" />
-  <app-indicator label="Need Attention" [count]="7" />
-  <app-indicator label="Up To Date" [count]="3" />
+  @if (indicators(); as indicators) {
+    <app-indicator label="People Tracked" [count]="indicators.peopleTracked" />
+    <app-indicator label="Need Attention" [count]="indicators.needAttention" />
+    <app-indicator label="Up To Date" [count]="indicators.upToDate" />
+  } @else {
+    <p>Loading...</p>
+  }
 </div>
 
 <section>
   <h4>Status Breakdown</h4>
-  <app-status-breakdown />
+  @if (statusBreakdown(); as statusBreakdown) {
+    <app-status-breakdown [countPerStatus]="statusBreakdown" />
+  } @else {
+    <p>Loading...</p>
+  }
 </section>
 
 <section>
@@ -17,10 +25,18 @@
     <a href="">See all in people</a>
   </div>
 
-  <app-needs-attention />
+  @if (needAttention(); as needAttention) {
+    <app-needs-attention [peopleNeedAttention]="needAttention" />
+  } @else {
+    <p>Loading...</p>
+  }
 </section>
 
 <section>
   <h4>By Relationship</h4>
-  <app-by-relationship />
+  @if (countPerRelationship(); as countPerRelationship) {
+    <app-by-relationship [countPerRelationship]="countPerRelationship" />
+  } @else {
+    <p>Loading...</p>
+  }
 </section>

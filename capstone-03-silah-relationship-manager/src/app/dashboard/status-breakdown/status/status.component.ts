@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Status } from './status.model';
+import { Status } from '../../../core/models/status.model';
 
 @Component({
   selector: 'app-status',
@@ -14,5 +14,5 @@ import { Status } from './status.model';
   styleUrl: './status.component.css',
 })
 export class StatusComponent {
-  statusData = input.required<Status>();
+  statusData = input.required<{ label: string; value: Status; count: number }>();
 }

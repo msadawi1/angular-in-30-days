@@ -7,7 +7,7 @@
 
 - Usually, you want to fetch data from the server when a component loads.
 - This is done using `ngOnInit` lifecycle hook.
-- HTTP Client's method correspond to actual HTTP methods, and the returned value for calling them is an observables, meaning that you need to subscribe to it in order to start fetching data.
+- HTTP Client's method correspond to actual HTTP methods, and the returned value for calling them is an observable, meaning that you need to subscribe to it in order to start fetching data.
 
 e.g.
 ``` ts
