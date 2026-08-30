@@ -18,8 +18,31 @@ li {
   list-style: none;
   display: flex;
   justify-content: space-between;
+  gap: 0.6rem;
   padding: 0.6rem 1.2rem;
   transition: all 0.1s ease-out;
+}
+
+.person-info {
+  min-width: 0;
+}
+
+.name,
+.relationship {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+@media (max-width: 24rem) {
+  li {
+    padding: 0.6rem 0.75rem;
+  }
 }
 
 li:hover {
