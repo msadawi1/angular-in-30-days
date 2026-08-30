@@ -1,17 +1,17 @@
 <div>
   <span>
-    <a href="">Silah</a>
+    <a routerLink="">Silah</a>
   </span>
   <ul>
-    <li>
-      <a class="selected" href="">Dashboard</a>
-    </li>
-    <li>
-      <a href="">People</a>
-    </li>
-    <li>
-      <a href="">Settings</a>
-    </li>
+    @for (route of routes; track $index) {
+      @if (!route.redirectTo && route.path !== '**') {
+        <li>
+          <a [class.selected]="currentRouteUrl === '/' + route.path" [routerLink]="route.path">
+            {{ route.data!['navLabel'] }}
+          </a>
+        </li>
+      }
+    }
   </ul>
   <button>
     <span>+</span>

@@ -1,29 +1,37 @@
 <li>
-  <div class="portfolio">
-    <span class="circle-text"></span>
-    <div class="person-info">
-      <span class="name">{{ person().name }}</span>
-      <span class="relationship">{{ relationshipLabel() }}</span>
-    </div>
-  </div>
+  <a routerLink="people/{{ person().id }}">
+    <div class="container">
+      <div class="portfolio">
+        <span class="circle-text"></span>
+        <div class="person-info">
+          <span class="name">{{ person().name }}</span>
+          <span class="relationship">{{ relationshipLabel() }}</span>
+        </div>
+      </div>
 
-  <div class="contact">
-    @switch (person().status) {
-      @case ('never_contacted') {
-        <span class="never-contacted">Never contacted</span>
-      }
-      @case ('due_soon') {
-        @if (person().dueInDays; as days) {
-          <span class="due-soon">contact in {{ days }} day{{ days === 1 ? '' : 's' }}</span>
-        }
-        <span class="last-contacted">{{ person().lastContactDate }}</span>
-      }
-      @default {
-        @if (daysSinceContact(); as days) {
-          <span class="overdue">{{ days }} day{{ days === 1 ? '' : 's' }} overdue</span>
-        }
-        <span class="last-contacted">{{ person().lastContactDate }}</span>
-      }
-    }
-  </div>
+      <div class="right">
+        <div class="contact">
+          @switch (person().status) {
+            @case ('never_contacted') {
+              <span class="never-contacted">Never contacted</span>
+            }
+            @case ('due_soon') {
+              @if (person().dueInDays; as days) {
+                <span class="due-soon">contact in {{ days }} day{{ days === 1 ? '' : 's' }}</span>
+              }
+              <span class="last-contacted">{{ person().lastContactDate }}</span>
+            }
+            @default {
+              @if (daysSinceContact(); as days) {
+                <span class="overdue">{{ days }} day{{ days === 1 ? '' : 's' }} overdue</span>
+              }
+              <span class="last-contacted">{{ person().lastContactDate }}</span>
+            }
+          }
+        </div>
+
+        <app-chevron-right-icon class="chevron" />
+      </div>
+    </div>
+  </a>
 </li>

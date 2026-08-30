@@ -1,0 +1,46 @@
+:host {
+  display: flex;
+  min-height: 60vh;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.not-found {
+  max-width: 28rem;
+  text-align: center;
+}
+
+.code {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-forest);
+}
+
+h1 {
+  margin: 0.5rem 0 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.message {
+  margin: 0 0 1.5rem;
+  color: var(--color-ink-muted);
+}
+
+.home-link {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  color: var(--color-forest);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.home-link:hover {
+  color: var(--color-forest-dark);
+}

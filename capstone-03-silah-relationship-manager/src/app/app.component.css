@@ -1,4 +1,11 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 main {
+  flex: 1;
   margin-top: 1.5rem;
   padding: 0 clamp(10px, 3dvw, 30px);
   margin-bottom: 3rem;

@@ -22,7 +22,10 @@
 <section>
   <div class="needs-attention-title">
     <h4>Needs Attention</h4>
-    <a href="">See all in people</a>
+    <a routerLink="people">
+      See all in people
+      <app-chevron-right-icon class="chevron" />
+    </a>
   </div>
 
   @if (needAttention(); as needAttention) {

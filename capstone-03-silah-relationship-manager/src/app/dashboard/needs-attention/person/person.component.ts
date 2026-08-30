@@ -1,11 +1,14 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { Person } from '../../../core/models/person.model';
 import { relationshipBaselineToken } from '../../../core/tokens/relationship-baseline.token';
+import { ChevronRightIconComponent } from '../../../shared/ui/chevron-right-icon/chevron-right-icon.component';
+import { RouterLink } from "@angular/router";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
   selector: 'app-person',
+  imports: [ChevronRightIconComponent, RouterLink],
   host: {
     '[class.on-track]': 'person().status === "on_track"',
     '[class.due-soon]': 'person().status === "due_soon"',

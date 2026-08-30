@@ -1,21 +1,29 @@
 :host(.overdue) {
-  --status-color: var(--color-status-overdue)
+  --status-color: var(--color-status-overdue);
 }
 
 :host(.on-track) {
-  --status-color: var(--color-status-on-track)
+  --status-color: var(--color-status-on-track);
 }
 
 :host(.due-soon) {
-  --status-color: var(--color-status-due-soon)
+  --status-color: var(--color-status-due-soon);
 }
 
 :host(.never-contacted) {
-  --status-color: var(--color-status-never-contacted)
+  --status-color: var(--color-status-never-contacted);
 }
 
 li {
   list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-ink);
+}
+
+.container {
   display: flex;
   justify-content: space-between;
   gap: 0.6rem;
@@ -34,18 +42,25 @@ li {
   white-space: nowrap;
 }
 
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+}
+
 .contact {
   flex: 0 0 auto;
   text-align: right;
 }
 
 @media (max-width: 24rem) {
-  li {
+  .container {
     padding: 0.6rem 0.75rem;
   }
 }
 
-li:hover {
+.container:hover {
   background-color: var(--color-canvas);
 }
 
@@ -106,4 +121,8 @@ li:hover {
 .overdue {
   color: var(--color-status-overdue);
   font-size: 0.8rem;
+}
+
+.chevron {
+  color: var(--color-ink-faint);
 }

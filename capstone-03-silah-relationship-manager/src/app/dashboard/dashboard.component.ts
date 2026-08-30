@@ -3,11 +3,13 @@ import { IndicatorComponent } from './indicator/indicator.component';
 import { StatusBreakdownComponent } from './status-breakdown/status-breakdown.component';
 import { NeedsAttentionComponent } from './needs-attention/needs-attention.component';
 import { ByRelationshipComponent } from './by-relationship/by-relationship.component';
+import { ChevronRightIconComponent } from '../shared/ui/chevron-right-icon/chevron-right-icon.component';
 import { PeopleService } from '../core/services/people-store.service';
 import { StatusService } from '../core/services/status.service';
 import { CadenceConfigService } from '../core/services/cadence-config.service';
 import { Status } from '../core/models/status.model';
 import { relationshipBaselineToken } from '../core/tokens/relationship-baseline.token';
+import { RouterLink } from "@angular/router";
 
 // Dashboard owns data fetching and passes them to children components
 @Component({
@@ -17,7 +19,9 @@ import { relationshipBaselineToken } from '../core/tokens/relationship-baseline.
     StatusBreakdownComponent,
     NeedsAttentionComponent,
     ByRelationshipComponent,
-  ],
+    ChevronRightIconComponent,
+    RouterLink
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
