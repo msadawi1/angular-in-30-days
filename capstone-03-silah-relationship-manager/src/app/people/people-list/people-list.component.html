@@ -1,0 +1,35 @@
+<app-card>
+  <div class="container">
+    <div class="filter">
+      <span>Type: </span>
+      <select name="type" id="type" #typeSelect (change)="onTypeChange(typeSelect.value)">
+        <option value="all">All</option>
+        @for (option of relationshipOptions; track $index) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter">
+      <span>Status: </span>
+      <select name="status" id="status" #statusSelect (change)="onStatusChange(statusSelect.value)">
+        <option value="all">All</option>
+        @for (option of statusOptions; track $index) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+</app-card>
+
+<p class="people-count">{{ people().length }} people.</p>
+
+<app-card variant="flush">
+  <div class="persons">
+    @for (person of filteredPeopleWithStatus(); track person.id) {
+      <app-person [person]="person" [showControls]="true" />
+    } @empty {
+      <p style="padding-left: 1rem">You have no contacts at the moment.</p>
+    }
+  </div>
+</app-card>

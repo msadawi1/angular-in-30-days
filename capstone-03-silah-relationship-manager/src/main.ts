@@ -5,6 +5,7 @@ import { apiUrlTokenProvider } from './app/core/tokens/app-config.token';
 import { relationshipBaselineProvider } from './app/core/tokens/relationship-baseline.token';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
+import { statusOptionsProvider } from './app/core/tokens/status.token';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -12,5 +13,6 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(),
     apiUrlTokenProvider,
     relationshipBaselineProvider,
+    statusOptionsProvider
   ],
 }).catch((err) => console.error(err));

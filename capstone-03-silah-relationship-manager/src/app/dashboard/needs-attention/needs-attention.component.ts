@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CardComponent } from '../../shared/ui/card/card.component';
-import { PersonComponent } from './person/person.component';
+import { PersonComponent } from '../../shared/ui/person/person.component';
 import { Person } from '../../core/models/person.model';
 
 @Component({

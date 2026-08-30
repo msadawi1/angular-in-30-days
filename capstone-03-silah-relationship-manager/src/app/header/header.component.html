@@ -4,7 +4,7 @@
   </span>
   <ul>
     @for (route of routes; track $index) {
-      @if (!route.redirectTo && route.path !== '**') {
+      @if (route.data && !route.redirectTo && route.path !== '**') {
         <li>
           <a [class.selected]="currentRouteUrl === '/' + route.path" [routerLink]="route.path">
             {{ route.data!['navLabel'] }}

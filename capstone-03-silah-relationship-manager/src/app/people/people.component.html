@@ -1,0 +1,13 @@
+<h2>People</h2>
+
+<section>
+  @if (peopleWithStatus(); as peopleWithStatus) {
+    <app-people-list [people]="peopleWithStatus" />
+  } @else {
+    <p>Loading...</p>
+  }
+</section>
+
+<section></section>
+
+<section></section>
