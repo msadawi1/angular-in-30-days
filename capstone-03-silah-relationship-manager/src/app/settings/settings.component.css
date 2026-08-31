@@ -10,6 +10,14 @@ h4 {
   margin: 0;
 }
 
+.info {
+    margin: 0;
+    margin-top: -0.2rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-ink-muted);
+}
+
 section {
   display: flex;
   flex-direction: column;

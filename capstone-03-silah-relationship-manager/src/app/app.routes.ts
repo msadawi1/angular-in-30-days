@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { PeopleComponent } from './people/people.component';
+import { SettingsComponent } from './settings/settings.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -18,11 +20,11 @@ export const routes: Routes = [
   },
   {
     path: 'people/:id',
-    component: NotFoundComponent, // TODO: replace with real profile page
+    component: ProfileComponent, // TODO: replace with real profile page
   },
   {
     path: 'settings',
-    component: NotFoundComponent,
+    component: SettingsComponent,
     title: 'Settings - Silah',
     data: { navLabel: 'Settings' },
   },

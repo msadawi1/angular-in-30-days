@@ -1,15 +1,12 @@
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { PeopleService } from '../core/services/people-store.service';
 import { CadenceConfigService } from '../core/services/cadence-config.service';
 import { StatusService } from '../core/services/status.service';
-import { RelationshipItemComponent } from '../dashboard/by-relationship/relationship-item/relationship-item.component';
-import { PersonComponent } from "../shared/ui/person/person.component";
-import { CardComponent } from "../shared/ui/card/card.component";
-import { PeopleListComponent } from "./people-list/people-list.component";
+import { PeopleListComponent } from './people-list/people-list.component';
 
 @Component({
   selector: 'app-people',
-  imports: [PersonComponent, CardComponent, PeopleListComponent],
+  imports: [PeopleListComponent],
   templateUrl: './people.component.html',
   styleUrl: './people.component.css',
 })

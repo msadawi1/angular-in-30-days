@@ -3,6 +3,12 @@ import { CadenceConfig } from '../models/cadence-config.model';
 import { apiUrlToken } from '../tokens/app-config.token';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { Relationship } from '../models/relationship.model';
+
+export type UpdateCadenceBody = {
+  overrides: Record<Relationship, number>;
+  applyToExisting: boolean;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +28,26 @@ export class CadenceConfigService {
         },
       }),
     );
+  }
+
+  // Note: no optimistic update used in the calling, state is updated after response is recieved
+  updateUserCadenceConfig(
+    relationship: Relationship,
+    newCadence: number,
+    updateExisting: UpdateCadenceBody['applyToExisting'],
+  ) {
+    const fullOverrides = { ...this.userCadenceConfig(), [relationship]: newCadence };
+    return this.httpClient
+      .put<UpdateCadenceBody['overrides']>(`${this.API_URL}/config/cadences`, {
+        overrides: fullOverrides,
+        applyToExisting: updateExisting,
+      })
+      .pipe(
+        tap({
+          next: (updatedConfig) => {
+            return this.userCadenceConfig.set(updatedConfig);
+          },
+        }),
+      );
   }
 }

@@ -1,0 +1,53 @@
+@for (cadence of cadenceConfigArray(); track cadence.value) {
+  <app-card>
+    <div class="container">
+      <span class="relationship-label">{{ cadence.label }}</span>
+
+      @if (!cadence.showForm) {
+        <button class="edit-btn" (click)="toggleForm(cadence.value)">
+          <span>every {{ cadence.frequency }} days</span>
+          <svg
+            style="display: inline"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+          >
+            <!-- Definition for reusable elements or styles -->
+            <style>
+              .pencil-icon {
+                fill: none;
+                stroke: #7a7877;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                transition: stroke 0.2s ease;
+              }
+            </style>
+
+            <!-- Minimalist Edit Pencil Path -->
+            <path
+              class="pencil-icon"
+              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"
+            />
+          </svg>
+        </button>
+      }
+
+      @if (cadence.showForm) {
+        <form
+          [id]="cadence.value"
+          class="edit-form"
+          (ngSubmit)="onSaveCadence(cadence.value, input.value, cadence.frequency)"
+        >
+          <input type="number" name="cadenceDays" [value]="cadence.frequency" #input/>
+          <span class="days-label">days</span>
+          <button type="button" class="cancel-btn" (click)="toggleForm(cadence.value)">
+            Cancel
+          </button>
+          <button type="submit" class="save-btn">Save</button>
+        </form>
+      }
+    </div>
+  </app-card>
+}
