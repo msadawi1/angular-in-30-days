@@ -1,7 +1,7 @@
 @for (cadence of cadenceConfigArray(); track cadence.value) {
   <app-card>
     <div class="container">
-      <span class="relationship-label">{{ cadence.label }}</span>
+      <span class="relationship-label">{{ cadence.value | relationshipLabel }}</span>
 
       @if (!cadence.showForm) {
         <button class="edit-btn" (click)="toggleForm(cadence.value)">

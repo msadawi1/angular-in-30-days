@@ -16,15 +16,19 @@ import { CreatePersonDto } from './dto/create-person.dto';
 import { QueryPeopleDto } from './dto/query-people.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { PeopleService } from './people.service';
-import { Person } from './person.entity';
+import { PersonView } from './person-view';
+import { PersonViewService } from './person-view.service';
 
 @Controller('people')
 export class PeopleController {
-  constructor(private readonly people: PeopleService) {}
+  constructor(
+    private readonly people: PeopleService,
+    private readonly view: PersonViewService,
+  ) {}
 
   @Get()
-  findAll(@Query() query: QueryPeopleDto): Promise<Person[]> {
-    return this.people.findAll(query);
+  async findAll(@Query() query: QueryPeopleDto): Promise<PersonView[]> {
+    return this.view.toViews(await this.people.findAll(query));
   }
 
   /** Declared before ':id' so "check-name" is never parsed as an id. */
@@ -34,21 +38,21 @@ export class PeopleController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Person> {
-    return this.people.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<PersonView> {
+    return this.view.toView(await this.people.findOne(id));
   }
 
   @Post()
-  create(@Body() dto: CreatePersonDto): Promise<Person> {
-    return this.people.create(dto);
+  async create(@Body() dto: CreatePersonDto): Promise<PersonView> {
+    return this.view.toView(await this.people.create(dto));
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePersonDto,
-  ): Promise<Person> {
-    return this.people.update(id, dto);
+  ): Promise<PersonView> {
+    return this.view.toView(await this.people.update(id, dto));
   }
 
   @Delete(':id')

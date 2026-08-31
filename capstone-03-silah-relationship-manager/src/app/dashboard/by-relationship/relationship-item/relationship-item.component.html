@@ -1,4 +1,4 @@
 <div class="relationship-item">
-  <span class="relationship-label">{{ label() }}</span>
-  <span class="relationship-count">{{ count() }}</span>
+  <span class="relationship-label">{{ relationship().relationship | relationshipLabel }}</span>
+  <span class="relationship-count">{{ relationship().count }}</span>
 </div>

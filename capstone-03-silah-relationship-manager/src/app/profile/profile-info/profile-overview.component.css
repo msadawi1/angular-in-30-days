@@ -1,0 +1,181 @@
+/* Owns the spacing between the card, the log button and the two sub-cards. */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.summary-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.chip.status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.chip.relationship {
+  border-color: var(--color-rule);
+  color: var(--color-ink-muted);
+}
+
+.chip.status {
+  border-color: var(--color-status-due-soon-border);
+  background-color: var(--color-status-due-soon-light);
+  color: var(--color-status-due-soon);
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.5rem;
+  background-color: var(--color-card);
+  color: var(--color-ink-muted);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.icon-button:hover {
+  border-color: var(--color-forest-border);
+  background-color: var(--color-forest-light);
+  color: var(--color-forest);
+}
+
+.icon-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.contact-method a {
+  text-decoration: none;
+  color: var(--color-ink);
+}
+
+.contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--color-ink-muted);
+}
+
+.contact-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.contact-overview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-rule);
+}
+
+.overview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.field-value {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.field-note {
+  color: var(--color-forest-mid);
+  font-size: 0.8rem;
+}
+
+.overview-item:first-child .field-note {
+  color: var(--color-ink-faint);
+}
+
+/* --- Log contact --- */
+
+.log-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background-color: var(--color-forest);
+  color: var(--color-card);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.log-contact:hover {
+  background-color: var(--color-forest-dark);
+}
+
+.plus {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+@media (max-width: 30rem) {
+  .contact-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

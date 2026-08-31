@@ -1,0 +1,12 @@
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.notes p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}

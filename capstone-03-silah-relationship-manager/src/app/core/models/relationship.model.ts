@@ -3,6 +3,5 @@ export type Relationship =
 
 export type RelationshipBaseline = {
   value: Relationship;
-  label: string;
   defaultCadenceDays: number;
 }[];

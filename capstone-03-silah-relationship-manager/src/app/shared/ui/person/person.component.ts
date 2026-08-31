@@ -3,12 +3,13 @@ import { Person } from '../../../core/models/person.model';
 import { relationshipBaselineToken } from '../../../core/tokens/relationship-baseline.token';
 import { ChevronRightIconComponent } from '../../../shared/ui/chevron-right-icon/chevron-right-icon.component';
 import { RouterLink } from "@angular/router";
+import { RelationshipLabelPipe } from '../../pipes/relationship-label.pipe';
 
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
+const days = (count: number) => `${count} day${count === 1 ? '' : 's'}`;
 
 @Component({
   selector: 'app-person',
-  imports: [ChevronRightIconComponent, RouterLink],
+  imports: [ChevronRightIconComponent, RouterLink, RelationshipLabelPipe],
   host: {
     '[class.on-track]': 'person().status === "on_track"',
     '[class.due-soon]': 'person().status === "due_soon"',
@@ -22,18 +23,21 @@ export class PersonComponent {
   person = input.required<Person>()
   showControls = input<boolean>(false)
 
-  private relationshipBaseline = inject(relationshipBaselineToken);
+  /** Reads the server-derived countdown; `dueInDays` is negative once overdue. */
+  contactSummary = computed(() => {
+    const { status, dueInDays } = this.person();
 
-  relationshipLabel = computed(
-    () => this.relationshipBaseline.find((entry) => entry.value === this.person().relationshipType)?.label
-      ?? this.person().relationshipType,
-  );
+    if (status === 'never_contacted' || dueInDays === null) {
+      return { className: 'never-contacted', text: 'Never contacted' };
+    }
+    if (status === 'overdue') {
+      return { className: 'overdue', text: `${days(-dueInDays)} overdue` };
+    }
 
-  daysSinceContact = computed(() => {
-    const lastContactDate = this.person().lastContactDate;
-    if (!lastContactDate) return null;
-
-    const elapsedMs = Date.now() - new Date(lastContactDate).getTime();
-    return Math.floor(elapsedMs / MS_PER_DAY);
+    const className = status === 'due_soon' ? 'due-soon' : 'on-track';
+    return {
+      className,
+      text: dueInDays === 0 ? 'contact today' : `contact in ${days(dueInDays)}`,
+    };
   });
 }

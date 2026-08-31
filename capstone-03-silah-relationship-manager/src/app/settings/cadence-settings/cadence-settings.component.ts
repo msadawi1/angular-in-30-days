@@ -5,10 +5,11 @@ import { relationshipBaselineToken } from '../../core/tokens/relationship-baseli
 import { Relationship } from '../../core/models/relationship.model';
 import { FormsModule } from '@angular/forms';
 import { CadenceConfigService } from '../../core/services/cadence-config.service';
+import { RelationshipLabelPipe } from '../../shared/pipes/relationship-label.pipe';
 
 @Component({
   selector: 'app-cadence-settings',
-  imports: [CardComponent, FormsModule],
+  imports: [CardComponent, FormsModule, RelationshipLabelPipe],
   templateUrl: './cadence-settings.component.html',
   styleUrl: './cadence-settings.component.css',
 })
@@ -28,7 +29,6 @@ export class CadenceSettingsComponent {
     return this.relationshipBaseline.map((entry) => ({
       value: entry.value,
       frequency: overrides[entry.value] ?? entry.defaultCadenceDays,
-      label: entry.label,
       showForm: shownForms[entry.value] ?? false,
     }));
   });

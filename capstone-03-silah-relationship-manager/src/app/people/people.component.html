@@ -1,8 +1,8 @@
 <h2>People</h2>
 
 <section>
-  @if (peopleWithStatus(); as peopleWithStatus) {
-    <app-people-list [people]="peopleWithStatus" />
+  @if (people(); as people) {
+    <app-people-list [people]="people" />
   } @else {
     <p>Loading...</p>
   }

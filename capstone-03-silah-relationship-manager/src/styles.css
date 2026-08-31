@@ -91,3 +91,13 @@ app-root {
   flex-direction: column;
   flex: 1;
 }
+
+/* Section caption above a value — shared by the profile cards, which are
+ * separate components and so cannot inherit it from one another. */
+.field-label {
+  color: var(--color-ink-faint);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

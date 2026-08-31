@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
-import { Person } from '../people/person.entity';
+import { PersonView } from '../people/person-view';
+import { PersonViewService } from '../people/person-view.service';
 import { ContactLog } from './contact-log.entity';
 import { ContactLogsService } from './contact-logs.service';
 import { CreateContactLogDto } from './dto/create-contact-log.dto';
@@ -24,12 +25,15 @@ export class PersonLogsController {
 
 @Controller('logs')
 export class LogsController {
-  constructor(private readonly logs: ContactLogsService) {}
+  constructor(
+    private readonly logs: ContactLogsService,
+    private readonly view: PersonViewService,
+  ) {}
 
-  /** Returns the person with its recomputed lastContactDate (FR-2.5), so the
-   * client does not need a follow-up fetch to refresh their status. */
+  /** Returns the person with its recomputed lastContactDate and status
+   * (FR-2.5), so the client does not need a follow-up fetch. */
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string): Promise<Person> {
-    return this.logs.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<PersonView> {
+    return this.view.toView(await this.logs.remove(id));
   }
 }

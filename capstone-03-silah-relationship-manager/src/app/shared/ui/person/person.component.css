@@ -158,6 +158,11 @@ button:hover {
   font-size: 0.8rem;
 }
 
+.on-track {
+  color: var(--color-status-on-track);
+  font-size: 0.8rem;
+}
+
 .overdue {
   color: var(--color-status-overdue);
   font-size: 0.8rem;

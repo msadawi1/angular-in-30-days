@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Put } from '@nestjs/common';
 import { RelationshipType } from '../common/domain';
-import { CadenceMap, CadenceService } from './cadence.service';
+import { CadenceService } from './cadence.service';
+import { CadenceMap } from './effective-cadence.service';
 import { UpdateCadencesDto } from './dto/update-cadences.dto';
 
 @Controller('config/cadences')

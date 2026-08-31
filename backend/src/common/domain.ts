@@ -13,6 +13,13 @@ export const CONTACT_TYPES = ['call', 'visit', 'message', 'other'] as const;
 
 export type ContactType = (typeof CONTACT_TYPES)[number];
 
+export const CONTACT_STATUSES = ['never_contacted', 'on_track', 'due_soon', 'overdue'] as const;
+
+export type ContactStatus = (typeof CONTACT_STATUSES)[number];
+
+/** Spec §2.3 — a person turns "due soon" once this share of their cadence has elapsed. */
+export const DUE_SOON_THRESHOLD = 0.8;
+
 /**
  * Factory baseline (spec §2.2). Immutable, shipped with the app.
  * The server keeps its own copy because it needs an effective cadence when

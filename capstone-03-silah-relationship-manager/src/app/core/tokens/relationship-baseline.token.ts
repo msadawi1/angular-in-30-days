@@ -1,39 +1,16 @@
 import { InjectionToken, Provider } from '@angular/core';
-import { Relationship, RelationshipBaseline } from '../models/relationship.model';
+import { RelationshipBaseline } from '../models/relationship.model';
 
-const RELATIONSHIP_BASELINE: { value: Relationship; label: string; defaultCadenceDays: number }[] =
-  [
-    {
-      value: 'immediate_family',
-      label: 'Immediate Family',
-      defaultCadenceDays: 7,
-    },
-    {
-      value: 'extended_family',
-      label: 'Extended Family',
-      defaultCadenceDays: 30,
-    },
-    {
-      value: 'close_friend',
-      label: 'Close Friend',
-      defaultCadenceDays: 14,
-    },
-    {
-      value: 'friend',
-      label: 'Friend',
-      defaultCadenceDays: 45,
-    },
-    {
-      value: 'colleague',
-      label: 'Colleague',
-      defaultCadenceDays: 90,
-    },
-    {
-      value: 'other',
-      label: 'Other',
-      defaultCadenceDays: 60,
-    },
-  ];
+/** Factory cadence defaults (spec §2.2). Display names live with the
+ * `relationshipLabel` pipe — this table is domain data, not presentation. */
+const RELATIONSHIP_BASELINE: RelationshipBaseline = [
+  { value: 'immediate_family', defaultCadenceDays: 7 },
+  { value: 'extended_family', defaultCadenceDays: 30 },
+  { value: 'close_friend', defaultCadenceDays: 14 },
+  { value: 'friend', defaultCadenceDays: 45 },
+  { value: 'colleague', defaultCadenceDays: 90 },
+  { value: 'other', defaultCadenceDays: 60 },
+];
 
 export const relationshipBaselineToken = new InjectionToken<RelationshipBaseline>(
   'relationship.default.baseline',

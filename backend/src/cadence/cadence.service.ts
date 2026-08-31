@@ -9,10 +9,7 @@ import {
 import { PeopleService } from '../people/people.service';
 import { CadenceOverride } from './cadence-override.entity';
 import { UpdateCadencesDto } from './dto/update-cadences.dto';
-
-/** Every type is always present — seeded to the factory default on startup,
- * so GET never needs a client-side fallback. */
-export type CadenceMap = Record<RelationshipType, number>;
+import { CadenceMap, EffectiveCadenceService } from './effective-cadence.service';
 
 @Injectable()
 export class CadenceService implements OnModuleInit {
@@ -20,6 +17,7 @@ export class CadenceService implements OnModuleInit {
     @InjectRepository(CadenceOverride)
     private readonly overrides: Repository<CadenceOverride>,
     private readonly people: PeopleService,
+    private readonly cadences: EffectiveCadenceService,
   ) {}
 
   /** Seeds any type missing a row with its factory default. Idempotent —
@@ -40,11 +38,7 @@ export class CadenceService implements OnModuleInit {
   /** Full config, factory defaults and user overrides alike — one row per
    * type, always. */
   async getOverrides(): Promise<CadenceMap> {
-    const rows = await this.overrides.find();
-    return rows.reduce<CadenceMap>((map, row) => {
-      map[row.relationshipType] = row.days;
-      return map;
-    }, {} as CadenceMap);
+    return this.cadences.map();
   }
 
   /**

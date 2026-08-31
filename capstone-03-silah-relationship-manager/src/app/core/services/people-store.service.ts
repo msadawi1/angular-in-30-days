@@ -27,5 +27,8 @@ export class PeopleService {
     );
   }
 
+  loadPerson(id: Person['id']) {
+    return this.httpClient.get<Person>(`${this.API_URL}/people/${id}`);
+  }
 
 }

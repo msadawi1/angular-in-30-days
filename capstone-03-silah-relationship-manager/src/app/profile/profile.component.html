@@ -1,4 +1,5 @@
-<span>
+@if (person(); as person) {
+  <span>
     <a class="back-link" routerLink="/people">
       <svg
         viewBox="0 0 24 24"
@@ -12,141 +13,23 @@
       </svg>
       Back
     </a>
-    <h2>Fatima Al-Hassan</h2>
-</span>
+    <h2>{{ person.name }}</h2>
+  </span>
 
-<section class="overview">
-  <app-card>
-    <div class="summary">
-      <div class="summary-header">
-        <div class="chips">
-          <span class="chip relationship">Immediate Family</span>
-          <span class="chip status">Overdue</span>
-        </div>
-        <button class="icon-button" type="button" aria-label="Edit person">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-          </svg>
-        </button>
-      </div>
-
-      <div class="contact-info">
-        <span class="contact-method phone">
-          <span class="contact-icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"
-              />
-            </svg>
-          </span>
-          <a href="tel:+15551234567">+1 (555) 234-7890</a>
-        </span>
-        <span class="contact-method email">
-          <span class="contact-icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="m22 7-10 6L2 7" />
-            </svg>
-          </span>
-          <a href="mailto:sadawe@gmai.com">fatima.hassan&#64;gmail.com</a>
-        </span>
-      </div>
-
-      <div class="contact-overview">
-        <div class="overview-item">
-          <span class="field-label">Last contact</span>
-          <span class="field-value">2 weeks ago</span>
-          <span class="field-note">August 12, 2026</span>
-        </div>
-
-        <div class="overview-item">
-          <span class="field-label">Cadence</span>
-          <span class="field-value">every 7 days</span>
-          <span class="field-note">Follows the Immediate Family default</span>
-        </div>
-      </div>
-    </div>
-  </app-card>
-
-  <button class="log-contact" type="button">
-    <span class="plus">+</span>
-    Log a contact
-  </button>
-
-  <app-card>
-    <div class="notes">
-      <span class="field-label">Notes</span>
-      <p>Mum. She worries when I don't call. Prefers morning calls before 10am her time.</p>
-    </div>
-  </app-card>
-
-  <app-card variant="flush">
-    <div class="important-dates">
-      <span class="field-label">Important dates</span>
-      <ul>
-        <li>
-          <span>Birthday</span>
-          <span class="date">March 14</span>
-        </li>
-        <li>
-          <span>Wedding anniversary</span>
-          <span class="date">June 8</span>
-        </li>
-      </ul>
-    </div>
-  </app-card>
-</section>
+  <section class="overview">
+    <app-profile-overview [person]="person" />
+  </section>
+} @else {
+  <p>Loading...</p>
+}
 
 <section class="history">
   <h4>Contact history</h4>
-
-  <app-card>
-    <ol class="timeline">
-      <li>
-        <div class="entry-header">
-          <span class="way">Phone call</span>
-          <span class="entry-date">August 12, 2026</span>
-        </div>
-        <p class="entry-note">Caught up about her trip. She sounded tired.</p>
-      </li>
-      <li>
-        <div class="entry-header">
-          <span class="way">Message</span>
-          <span class="entry-date">July 28, 2026</span>
-        </div>
-        <p class="entry-note">Sent photos from the weekend.</p>
-      </li>
-      <li>
-        <div class="entry-header">
-          <span class="way">In person</span>
-          <span class="entry-date">July 4, 2026</span>
-        </div>
-        <p class="entry-note">Lunch at hers.</p>
-      </li>
-    </ol>
-  </app-card>
+  @if (contactLogs(); as contactLogs) {
+    <app-contact-history [contactLogs]="contactLogs" />
+  } @else {
+    <p>Loading...</p>
+  }
 </section>
 
 <section class="controls">

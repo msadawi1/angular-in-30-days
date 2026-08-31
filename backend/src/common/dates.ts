@@ -22,3 +22,12 @@ export function addDays(isoDate: string, days: number): string {
 export function isFuture(isoDate: string): boolean {
   return isoDate > today();
 }
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/** Whole days from `from` to `to`. Negative when `from` is the later date. */
+export function daysBetween(from: string, to: string): number {
+  const fromMs = new Date(`${from}T00:00:00Z`).getTime();
+  const toMs = new Date(`${to}T00:00:00Z`).getTime();
+  return Math.round((toMs - fromMs) / MS_PER_DAY);
+}

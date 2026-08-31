@@ -5,28 +5,15 @@
         <span class="circle-text"></span>
         <div class="person-info">
           <span class="name">{{ person().name }}</span>
-          <span class="relationship">{{ relationshipLabel() }}</span>
+          <span class="relationship">{{ person().relationshipType | relationshipLabel}}</span>
         </div>
       </div>
 
       <div class="right">
         <div class="contact">
-          @switch (person().status) {
-            @case ('never_contacted') {
-              <span class="never-contacted">Never contacted</span>
-            }
-            @case ('due_soon') {
-              @if (person().dueInDays; as days) {
-                <span class="due-soon">contact in {{ days }} day{{ days === 1 ? '' : 's' }}</span>
-              }
-              <span class="last-contacted">{{ person().lastContactDate }}</span>
-            }
-            @default {
-              @if (daysSinceContact(); as days) {
-                <span class="overdue">{{ days }} day{{ days === 1 ? '' : 's' }} overdue</span>
-              }
-              <span class="last-contacted">{{ person().lastContactDate }}</span>
-            }
+          <span [class]="contactSummary().className">{{ contactSummary().text }}</span>
+          @if (person().lastContactDate; as lastContactDate) {
+            <span class="last-contacted">{{ lastContactDate }}</span>
           }
         </div>
 
