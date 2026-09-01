@@ -36,7 +36,7 @@
   <app-card>
     <div class="actions">
       <span class="field-label">Actions</span>
-      <button class="action danger" type="button">
+      <button class="action danger" type="button" (click)="toggleDialog()">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -54,3 +54,12 @@
     </div>
   </app-card>
 </section>
+
+@if (isDialogVisible()) {
+  <dialog id="confirm-delete" #confirmDialog (click)="onBackdropClick($event)" (close)="onNativeClose()">
+    <h2>Remove {{ person()?.name }}?</h2>
+    <p>This action can't be undone.</p>
+    <button class="dialog-btn cancel" (click)="toggleDialog()">Cancel</button>
+    <button class="dialog-btn confirm" (click)="onDelete()">Delete</button>
+  </dialog>
+}

@@ -31,4 +31,7 @@ export class PeopleService {
     return this.httpClient.get<Person>(`${this.API_URL}/people/${id}`);
   }
 
+  deletePerson(id: Person['id']) {
+    return this.httpClient.delete<Person>(`${this.API_URL}/people/${id}`);
+  }
 }

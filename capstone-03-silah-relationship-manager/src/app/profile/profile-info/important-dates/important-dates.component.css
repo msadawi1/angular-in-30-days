@@ -25,6 +25,12 @@
   font-size: 0.9rem;
 }
 
+.no-dates {
+  padding: 0 1.25rem 1rem;
+  font-size: 0.9rem;
+  color: var(--color-ink-muted);
+}
+
 .important-dates .date {
   color: var(--color-ink-muted);
   flex: 0 0 auto;

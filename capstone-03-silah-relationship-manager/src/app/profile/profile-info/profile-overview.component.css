@@ -1,3 +1,28 @@
+/* The person's status picks the chip palette, same as app-status does. */
+:host(.on-track) {
+  --status-color: var(--color-status-on-track);
+  --status-border-color: var(--color-status-on-track-border);
+  --status-surface: var(--color-status-on-track-light);
+}
+
+:host(.due-soon) {
+  --status-color: var(--color-status-due-soon);
+  --status-border-color: var(--color-status-due-soon-border);
+  --status-surface: var(--color-status-due-soon-light);
+}
+
+:host(.overdue) {
+  --status-color: var(--color-status-overdue);
+  --status-border-color: var(--color-status-overdue-border);
+  --status-surface: var(--color-status-overdue-light);
+}
+
+:host(.never-contacted) {
+  --status-color: var(--color-status-never-contacted);
+  --status-border-color: var(--color-status-never-contacted-border);
+  --status-surface: var(--color-status-never-contacted-light);
+}
+
 /* Owns the spacing between the card, the log button and the two sub-cards. */
 :host {
   display: flex;
@@ -50,9 +75,9 @@
 }
 
 .chip.status {
-  border-color: var(--color-status-due-soon-border);
-  background-color: var(--color-status-due-soon-light);
-  color: var(--color-status-due-soon);
+  border-color: var(--status-border-color);
+  background-color: var(--status-surface);
+  color: var(--status-color);
 }
 
 .icon-button {

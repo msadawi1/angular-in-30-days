@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 
 @Component({
@@ -7,4 +7,6 @@ import { CardComponent } from '../../../shared/ui/card/card.component';
   templateUrl: './notes.component.html',
   styleUrl: './notes.component.css',
 })
-export class NotesComponent {}
+export class NotesComponent {
+  notes = input.required<string | null>();
+}
