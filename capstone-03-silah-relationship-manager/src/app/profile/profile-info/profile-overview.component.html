@@ -54,16 +54,18 @@
 
       <div class="overview-item">
         <span class="field-label">Cadence</span>
-        <span class="field-value">every {{ person().customCadenceDays }} days</span>
-        <span class="field-note"
-          >Follows the {{ person().relationshipType | relationshipLabel }} default</span
-        >
+        <span class="field-value">every {{ cadenceDays() }} days</span>
+        @if (!isCustomCadence()) {
+          <span class="field-note"
+            >Follows the {{ person().relationshipType | relationshipLabel }} default</span
+          >
+        }
       </div>
     </div>
   </div>
 </app-card>
 
-<button class="log-contact" type="button">
+<button class="log-contact" type="button" (click)="onLogContact()">
   <span class="plus">+</span>
   Log a contact
 </button>

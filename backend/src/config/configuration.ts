@@ -7,7 +7,6 @@ import { Person } from '../people/person.entity';
 
 export interface AppConfig {
   port: number;
-  apiKey: string;
   databasePath: string;
   corsOrigin: string;
 }
@@ -15,7 +14,6 @@ export interface AppConfig {
 export function loadConfig(): AppConfig {
   return {
     port: Number(process.env.PORT ?? 3000),
-    apiKey: process.env.API_KEY ?? 'silah-dev-key',
     databasePath: process.env.DATABASE_PATH ?? join(process.cwd(), 'silah.sqlite'),
     corsOrigin: process.env.CORS_ORIGIN ?? 'http://localhost:4200',
   };

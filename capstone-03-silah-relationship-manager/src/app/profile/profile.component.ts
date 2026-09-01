@@ -4,7 +4,6 @@ import { CardComponent } from '../shared/ui/card/card.component';
 import { PeopleService } from '../core/services/people-store.service';
 import { Person } from '../core/models/person.model';
 import { ContactLogService } from '../core/services/contact-log.service';
-import { ContactLog } from '../core/models/contact-log.model';
 import { ProfileOverviewComponent } from './profile-info/profile-overview.component';
 import { ContactHistoryComponent } from './contact-history/contact-history.component';
 
@@ -16,11 +15,11 @@ import { ContactHistoryComponent } from './contact-history/contact-history.compo
 })
 export class ProfileComponent implements OnInit {
   person = signal<Person | undefined>(undefined);
-  contactLogs = signal<ContactLog[] | undefined>(undefined);
   isDialogVisible = signal<boolean>(false);
 
   private peopleService = inject(PeopleService);
   private contactLogService = inject(ContactLogService);
+  contactLogs = this.contactLogService.contactLogs;
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -43,9 +42,7 @@ export class ProfileComponent implements OnInit {
     this.peopleService.loadPerson(this.personId).subscribe({
       next: (person) => this.person.set(person),
     });
-    this.contactLogService.loadPersonContactLogs(this.personId).subscribe({
-      next: (logs) => this.contactLogs.set(logs),
-    });
+    this.contactLogService.loadPersonContactLogs(this.personId).subscribe();
   }
 
   onDelete() {

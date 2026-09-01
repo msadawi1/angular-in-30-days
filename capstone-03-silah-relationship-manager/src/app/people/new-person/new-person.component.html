@@ -1,0 +1,118 @@
+<a class="back-link" href="/people">
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="m15 18-6-6 6-6" />
+  </svg>
+  Back
+</a>
+
+<h2>Add person</h2>
+
+<form class="person-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="card">
+    <div class="field-group">
+      <label class="field-label" for="name">Name</label>
+      <input type="text" id="name" formControlName="name" placeholder="Full name" />
+    </div>
+
+    <div class="field-group">
+      <p class="field-label">Relationship type</p>
+      <div class="options">
+        @for (option of relationshipOptions; track option.value) {
+          <div class="option">
+            <label [for]="option.value">{{ option.value | relationshipLabel }}</label>
+            <input
+              type="radio"
+              [id]="option.value"
+              [value]="option.value"
+              formControlName="relationshipType"
+            />
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="cadence">Contact frequency (days) <span class="optional">- optional</span></label>
+      <input type="number" id="cadence" formControlName="customCadenceDays" min="1" placeholder="e.g. 14" />
+    </div>
+
+    <div class="field-row" formGroupName="contactInfo">
+      <div class="field-group">
+        <label class="field-label" for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="name@example.com"
+          [class.invalid]="showReachableError"
+        />
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="phone">Phone</label>
+        <input
+          type="tel"
+          id="phone"
+          formControlName="phone"
+          placeholder="+1 555 000 0000"
+          [class.invalid]="showReachableError"
+        />
+      </div>
+    </div>
+    <p class="field-note">At least one of email or phone is required.</p>
+
+    <div class="field-group">
+      <label class="field-label" for="notes">Notes <span class="optional">- optional</span></label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        rows="3"
+        placeholder="Anything worth remembering..."
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field-group" formArrayName="importantDates">
+      <p class="field-label">Important dates <span class="optional">- optional</span></p>
+
+      @for (dateGroup of importantDates.controls; track $index; let i = $index) {
+        <div class="important-date-row" [formGroupName]="i">
+          <input type="text" formControlName="label" placeholder="Label" class="date-label-input" />
+          <input type="date" formControlName="date" class="date-value-input" />
+          <button
+            type="button"
+            class="remove-date-btn"
+            aria-label="Remove date"
+            (click)="removeImportantDate(i)"
+          >
+            X
+          </button>
+        </div>
+      }
+
+      <button type="button" class="add-date-btn" (click)="addImportantDate()">
+        <span class="plus">+</span>
+        Add another date
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field-group">
+      <label class="field-label" for="lastContacted">Last contacted <span class="optional">- optional</span></label>
+      <input type="date" id="lastContacted" formControlName="lastContactDate" />
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="cancel-btn" type="button" routerLink="/people">Cancel</button>
+    <button class="save-btn" type="submit">Add person</button>
+  </div>
+</form>

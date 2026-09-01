@@ -28,7 +28,7 @@ export class CadenceSettingsComponent {
 
     return this.relationshipBaseline.map((entry) => ({
       value: entry.value,
-      frequency: overrides[entry.value] ?? entry.defaultCadenceDays,
+      frequency: overrides[entry.value],
       showForm: shownForms[entry.value] ?? false,
     }));
   });

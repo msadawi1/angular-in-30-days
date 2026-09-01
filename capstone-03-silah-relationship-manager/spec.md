@@ -118,7 +118,7 @@ type RelationshipType =
 type ContactType = 'call' | 'visit' | 'message' | 'other';
 
 type PersonStatus =
-  | 'never_contacted' | 'ok' | 'due_soon' | 'overdue';
+  | 'never_contacted' | 'on_track' | 'due_soon' | 'overdue';
 
 interface Person {
   id: string;
@@ -129,10 +129,12 @@ interface Person {
   customCadenceDays: number | null;    // null = follows the type default
   notes: string | null;
   importantDates: ImportantDate[];
-  initialContactEstimate: string | null; // ISO date from the add-flow chip; approximate
   lastContactDate: string | null;      // ISO date; null = never contacted
   createdAt: string;
   updatedAt: string;
+  // Server-computed, present only on responses (§2.3, §4.3):
+  status: PersonStatus;
+  dueInDays: number | null;            // cadence days remaining; negative once overdue
 }
 
 interface ImportantDate {
@@ -156,7 +158,10 @@ interface CadenceConfig {
 }
 ```
 
-**Why `initialContactEstimate` is separate from logs:** the add-flow chip ("about a month ago") is an *approximation*. Writing it into the timeline as a `ContactLog` would invent a call that never happened on a date that was never real. Keeping it as its own field means the timeline stays truthful, and it acts as a floor when `lastContactDate` is recomputed after log deletion (FR-2.5).
+**Deviation from an earlier draft:** this spec once kept the add-flow chip's estimate in its own `initialContactEstimate` field, separate from `lastContactDate`, so the timeline would never imply a logged contact that never happened. The backend collapses that into `lastContactDate` directly — `POST /api/people` accepts `lastContactDate` straight from the chip, and there is no second field. Two consequences:
+
+- A newly added person can read as "last contacted a month ago" with an empty contact timeline, because the chip value is no longer distinguishable from a logged contact.
+- Deleting a person's only log rewinds `lastContactDate` to `null`, not back to the chip's estimate — it's gone once a log has superseded it (see FR-2.5).
 
 ## 2.2 Relationship configuration
 
@@ -182,11 +187,11 @@ The factory layer isn't redundant — it's what "Reset to defaults" reads from, 
 
 ## 2.3 Status computation — the core algorithm
 
-**Where it runs:** entirely client-side. Pure derived state from data already loaded, so the API never returns a status field. This is what makes `computed()` genuinely load-bearing rather than decorative.
+**Where it runs:** both sides, deliberately. The client computes it as pure derived state (`computed()`, §4.2) so a local, unsaved cadence-settings edit recomputes every status immediately, with no round trip (FR-5.7). The server (`person-view.ts`) computes the same algorithm and stamps `status` + `dueInDays` onto every `Person` it returns, using the current effective cadence — a convenience for any consumer that isn't running the Angular store, not a replacement for the client chain.
 
 ```
 cadence      = person.customCadenceDays ?? cadenceFor(person.relationshipType)
-baselineDate = person.lastContactDate ?? person.initialContactEstimate ?? person.createdAt
+baselineDate = person.lastContactDate ?? person.createdAt
 daysSince    = daysBetween(baselineDate, today)
 urgency      = daysSince / cadence        // normalized, cross-cadence comparable
 ```
@@ -195,10 +200,10 @@ Evaluated in strict priority order — first match wins:
 
 | # | Condition | Status |
 |---|---|---|
-| 1 | `lastContactDate === null` and `initialContactEstimate === null` | `never_contacted` |
+| 1 | `lastContactDate === null` | `never_contacted` |
 | 2 | `urgency > 1.0` | `overdue` |
 | 3 | `urgency > 0.8` | `due_soon` |
-| 4 | otherwise | `ok` |
+| 4 | otherwise | `on_track` |
 
 **Two decisions worth understanding, because they're the design:**
 
@@ -207,7 +212,7 @@ Evaluated in strict priority order — first match wins:
 
 ## 2.4 Sorting and grouping
 
-Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) → `due_soon` (urgency desc). `ok` is not shown on the dashboard; it lives on the full people list.
+Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) → `due_soon` (urgency desc). `on_track` is not shown on the dashboard; it lives on the full people list.
 
 ---
 
@@ -220,7 +225,7 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 - **FR-1.3** If the user changes relationship type *after* manually overriding cadence, preserve the manual value. If they have not overridden it, it follows the newly selected type's current default.
 - **FR-1.4** Capture "last spoke" via a **single tap on a preset chip** — never a text field or date picker. Chips and their mappings:
 
-  | Chip | Sets `initialContactEstimate` to |
+  | Chip | Sets `lastContactDate` to |
   |---|---|
   | Today | today |
   | A few days ago | today − 3 |
@@ -230,9 +235,9 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
   | Never contacted | `null` |
 
   Default selection is **Never contacted**, so skipping the question entirely is valid and does not misrepresent history.
-- **FR-1.5** Edit any field after creation.
+- ~~**FR-1.5** Edit any field after creation.~~ **Removed.** The backend has no update endpoint — a person's fields, once created, are fixed short of delete-and-recreate. `people/:id/edit` is dropped from the route table (§4.5) and `PersonFormPage` only ever runs in create mode.
 - **FR-1.7** Hard-delete a person and cascade-delete their logs, behind an explicit confirmation.
-- **FR-1.8** Manage a variable-length list of important dates per person (add/remove).
+- **FR-1.8** Manage a variable-length list of important dates per person (add/remove) — only at creation time, since there is no edit flow (see FR-1.5).
 - **FR-1.9** A person's detail view states plainly which cadence source is in effect — "Follows Close Friend default (14 days)" vs "Custom: 10 days" — so the inheritance is never invisible.
 
 ## 3.2 Functional — contact logs
@@ -240,7 +245,7 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 - **FR-2.1** Log a contact with type + date. Type is chosen by tapping a chip. Date defaults to today and is adjusted by tapping a "when" chip (Today / Yesterday / A few days ago / About a week ago); an exact date picker is available but collapsed. Future dates are rejected.
 - **FR-2.2** On save, set `lastContactDate` to the log date **only if** it is later than the current value.
 - **FR-2.4** Display a person's logs newest-first. Notes are optional and never required to save.
-- **FR-2.5** Delete an individual log; afterwards recompute `lastContactDate` as `max(latest remaining log date, initialContactEstimate)`, or `null` if neither exists.
+- **FR-2.5** Delete an individual log; afterwards recompute `lastContactDate` as the newest remaining log's date, or `null` if none exists. (No `initialContactEstimate` floor — see §2.1 deviation note.)
 
 ## 3.3 Functional — forms & validation
 
@@ -268,15 +273,15 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 
 - **FR-5.1** Settings exposes an editable cadence value for each of the six relationship types.
 - **FR-5.2** Each value must be an integer 1–365; invalid values block save.
-- **FR-5.3** Changed defaults apply to **people added after the change**. Existing people are not modified.
-- **FR-5.4** Before saving, show the number of existing people who follow each changed default, so the consequence of FR-5.3 is visible rather than assumed.
-- **FR-5.5** Offer an explicit opt-in to also apply the change to existing people who follow that default. People with a manual override (`customCadenceDays !== null`) are never affected by either path.
+- **FR-5.3** **Resolved as live inheritance** (Open Decision #1, §7). `customCadenceDays === null` means "follows the *current* effective default" — a changed default moves every non-overridden person immediately, with no writes to the people table. This supersedes the earlier "future additions only" behavior; `null` never degrades into a value that was merely true at creation time.
+- **FR-5.4** Before saving, show the number of existing people who follow each changed default (`GET /api/config/cadences/usage`), so the consequence of FR-5.3 — that they're about to move — is visible rather than assumed.
+- **FR-5.5** Offer an explicit opt-in (`applyToExisting`) to *pin* the new value onto people currently following that default (`customCadenceDays = newValue`), so a later default change no longer moves them. People with a manual override are never affected by either path.
 - **FR-5.6** "Reset to defaults" restores all six values from the injected factory baseline and clears stored overrides.
 - **FR-5.7** Changing a default immediately recomputes statuses for any affected people, with no page reload.
 
 ## 3.6 Non-functional
 
-- **NFR-1 — No authentication in v1.** Single user, single device. Adding auth means guards, token refresh, and a login flow — a whole separate learning block that would displace the topics this project exists to practice. The API is protected by a static key header instead, which is honest about being a placeholder rather than pretending to be security.
+- **NFR-1 — No authentication in v1.** Single user, single device. Adding auth means guards, token refresh, and a login flow — a whole separate learning block that would displace the topics this project exists to practice. The earlier placeholder `X-Api-Key` header has been removed entirely — single-user/single-device didn't justify the extra moving part, so the API is open with no request-level gate at all.
 - **NFR-2 — Offline read tolerance.** The last-loaded people list and cadence config are cached to `localStorage` and rendered when the API is unreachable, with a clear stale-data banner. Writes are not queued offline; they fail loudly.
 - **NFR-3 — Every async operation has three visible states:** loading, error, empty. No spinner-forever, no blank screen on failure.
 - **NFR-4 — Errors are normalized** into a single shape before reaching any component, so no component ever branches on raw HTTP status codes.
@@ -294,7 +299,7 @@ Dashboard order: `overdue` (urgency desc) → `never_contacted` (urgency desc) �
 src/app/
     tokens/
       relationship-baseline.token.ts   // factory defaults, immutable
-      app-config.token.ts              // API base URL, API key
+      app-config.token.ts              // API base URL
     services/
       people-store.service.ts          // root — shared state + people HTTP
       cadence-config.service.ts        // root — user overrides over baseline
@@ -363,26 +368,30 @@ Components read computed signals and call store methods. They never mutate `peop
 
 ## 4.3 API surface (NestJS)
 
+No update endpoint (FR-1.5 removed) and no auth header (NFR-1) — both dropped from the earlier draft.
+
 ```
 GET    /api/people?search=&type=
 POST   /api/people
 GET    /api/people/:id
-PATCH  /api/people/:id
 DELETE /api/people/:id
-GET    /api/people/check-name?name=          → { exists: boolean }
+GET    /api/people/check-name?name=&excludeId=  → { exists: boolean }
 
 GET    /api/people/:id/logs
 POST   /api/people/:id/logs
 DELETE /api/logs/:id
 
-GET    /api/config/cadences                  → user overrides only
-PUT    /api/config/cadences                  → { overrides, applyToExisting: boolean }
-DELETE /api/config/cadences                  → clear overrides (reset to factory)
+GET    /api/config/cadences                     → full six-type map, factory + overrides merged
+GET    /api/config/cadences/usage                → { [type]: countFollowingDefault } (FR-5.4)
+PUT    /api/config/cadences                      → { overrides, applyToExisting: boolean }
+DELETE /api/config/cadences                       → clear overrides (reset to factory)
 ```
+
+`/config/cadences/usage` is the one addition beyond the earlier endpoint list: FR-5.4 needs a count the client can't derive without loading every person.
 
 **Server responsibilities:** persistence, cascade delete, recomputing `lastContactDate` on log create/delete (FR-2.2, FR-2.5), rejecting future dates, and — when `applyToExisting` is true — batch-updating only those people whose `customCadenceDays` is `null`.
 
-**Server does NOT compute status** — that's client-side derived state.
+**Server also computes `status` and `dueInDays`** and stamps them onto every `Person` it returns (§2.3). The client's own `computed()` chain remains the source of truth for FR-5.7's no-reload recompute — the server fields are read on load, not depended on for reactivity.
 
 **Error shape (all failures):**
 ```json
@@ -391,9 +400,7 @@ DELETE /api/config/cadences                  → clear overrides (reset to facto
 
 ## 4.4 HTTP interceptor
 
-One functional interceptor, two jobs:
-1. Attach `X-Api-Key` from the injected app config to every `/api` request.
-2. Normalize every failure — network error, 4xx, 5xx, malformed body — into a single `AppError` shape so `catchError` handlers downstream never inspect status codes.
+One functional interceptor: normalize every failure — network error, 4xx, 5xx, malformed body — into a single `AppError` shape so `catchError` handlers downstream never inspect status codes. There is no auth header to attach (NFR-1).
 
 ## 4.5 Routes
 
@@ -403,11 +410,10 @@ One functional interceptor, two jobs:
 'people'          → PersonListPage
 'people/new'      → PersonFormPage
 'people/:id'      → PersonDetailPage
-'people/:id/edit' → PersonFormPage
 'settings'        → SettingsPage
 '**'              → NotFoundPage
 ```
-Apply `CanDeactivate` on the form and settings routes for FR-3.8.
+`people/:id/edit` is dropped — no update endpoint (FR-1.5). Apply `CanDeactivate` on the create form and settings routes for FR-3.8.
 
 ---
 
@@ -447,7 +453,7 @@ Every entry below is justified by a requirement, not by the syllabus.
 |---|---|
 | `input.required<T>()` | `PersonCard.person`, `ContactTimeline.personId`, `ChipGroup.options` |
 | Signal inputs (optional) | `Button.variant`, `StatusBadge.status` |
-| `output()` | `PersonCard`: `logContact`, `edit` |
+| `output()` | `PersonCard`: `logContact` (no `edit` — FR-1.5 removed, there's nowhere to navigate to) |
 | `model()` | `SearchBar.value` and `ChipGroup.selected` — both genuine two-way: the parent needs to set/clear them programmatically while the child also writes to them |
 
 ### Services & DI
@@ -457,7 +463,7 @@ Every entry below is justified by a requirement, not by the syllabus.
 | `providedIn: 'root'` | `PeopleStore`, `CadenceConfigService`, `ContactLogService`, `NotificationService`, `SettingsService` — genuinely app-wide singletons | — |
 | Component-level `providers` | `PersonFormDraftService` on `PersonFormPage` — each form instance needs its **own** draft/dirty state. A singleton would leak one form's unsaved edits into the next. | FR-3.8 |
 | Service into service | `ContactLogService` → into `PeopleStore` (logging refreshes the person); `CadenceConfigService` → into `PeopleStore` (status depends on cadence) | FR-2.2, FR-5.7 |
-| **`InjectionToken`** | `RELATIONSHIP_BASELINE` — the immutable factory cadences/labels/colors. Now genuinely load-bearing rather than decorative: it's the fallback that guarantees `cadenceFor()` always returns a number, and it's what "Reset to defaults" reads from. Distinct from the *mutable* override state in the service. Plus `APP_CONFIG` for base URL and API key. | §2.2, FR-5.6 |
+| **`InjectionToken`** | `RELATIONSHIP_BASELINE` — the immutable factory cadences/labels/colors. Now genuinely load-bearing rather than decorative: it's the fallback that guarantees `cadenceFor()` always returns a number, and it's what "Reset to defaults" reads from. Distinct from the *mutable* override state in the service. Plus `APP_CONFIG` for the API base URL. | §2.2, FR-5.6 |
 
 ### Async & HTTP
 | Topic | Implementation | Driven by |
@@ -500,7 +506,7 @@ Hardcode an in-memory array of people. Build: `RELATIONSHIP_BASELINE` token, `Ca
 
 ### Phase 2 — `linkedSignal`, effects, local persistence, cadence settings
 Add the cadence-override `linkedSignal`, the `localStorage` effect, client-side search + filters, and the cadence settings screen with in-memory overrides.
-**Done when:** editing a type default in Settings changes what new people pre-fill with, leaves existing people alone, and data survives a refresh.
+**Done when:** editing a type default in Settings changes what new people pre-fill with, immediately moves every existing non-overridden person's status (live inheritance, FR-5.3), and data survives a refresh.
 
 ### Phase 3 — Routing
 Split into the routes in §4.5, add lazy loading and the not-found route.
@@ -521,7 +527,7 @@ Generate the NestJS API, swap store internals from in-memory to `HttpClient`, ad
 
 Judgment calls this spec deliberately leaves to you:
 
-1. **The cadence-default drift problem.** FR-5.3 says a changed default applies only to future additions. Implementing that means snapshotting the old value onto existing people, which converts them from "follows default" to "custom." Do that a few times and every person is custom, `customCadenceDays` is never `null`, and the Settings screen stops affecting anything real. FR-5.5's opt-in mitigates this, but only if you actually use it. The alternative — live inheritance, where changing a default immediately moves everyone who hasn't overridden — keeps defaults meaningful forever at the cost of occasionally surprising you with a mass status shift. **Worth deciding before Phase 2**, because it changes what `customCadenceDays: null` means.
+1. ~~**The cadence-default drift problem.**~~ **Resolved: live inheritance.** `customCadenceDays === null` always follows the *current* effective default; changing a default in Settings moves everyone who hasn't overridden, with no writes to the people table. `applyToExisting` (FR-5.5) pins the new value onto those people instead, so a later default change stops moving them. This keeps `customCadenceDays: null` meaningful forever, at the cost of the occasional surprising mass status shift the snapshot alternative would have avoided. See FR-5.3.
 2. **Should `due_soon` fire notifications, or only `overdue`?** Earlier warning is more useful but risks notification fatigue.
 3. **Should the 0.8 due-soon threshold be user-configurable?** Configurable is flexible; fixed is one less setting to explain. Note that you've now added one settings screen — a second lever might be one too many.
 4. **Should contact *type* affect cadence?** Arguably a visit should count more than a text — but this adds real complexity to §2.3 and may not be worth it in v1.

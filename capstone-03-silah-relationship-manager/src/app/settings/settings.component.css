@@ -10,6 +10,39 @@ h4 {
   margin: 0;
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-rule);
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.reset-btn:hover {
+  color: var(--color-forest);
+  border-color: var(--color-forest);
+}
+
 .info {
     margin: 0;
     margin-top: -0.2rem;

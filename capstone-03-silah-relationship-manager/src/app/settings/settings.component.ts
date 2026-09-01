@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CadenceSettingsComponent } from './cadence-settings/cadence-settings.component';
 import { CadenceConfigService } from '../core/services/cadence-config.service';
 
@@ -10,10 +10,17 @@ import { CadenceConfigService } from '../core/services/cadence-config.service';
 })
 export class SettingsComponent implements OnInit {
   private cadenceConfigService = inject(CadenceConfigService);
-  cadenceConfig = this.cadenceConfigService.loadedUserCadenceConfig
+  private destroyRef = inject(DestroyRef);
+  cadenceConfig = this.cadenceConfigService.loadedUserCadenceConfig;
 
   // get the config on load
   ngOnInit(): void {
     this.cadenceConfigService.loadUserCadenceConfig().subscribe();
+  }
+
+  onResetDefaults() {
+    const sub = this.cadenceConfigService.resetToDefault().subscribe();
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 }

@@ -5,7 +5,7 @@
       <select name="type" id="type" #typeSelect (change)="onTypeChange(typeSelect.value)">
         <option value="all">All</option>
         @for (option of relationshipOptions; track $index) {
-          <option [value]="option.value">{{ option.label }}</option>
+          <option [value]="option.value">{{ option.value | relationshipLabel }}</option>
         }
       </select>
     </div>

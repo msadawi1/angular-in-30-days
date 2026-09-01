@@ -6,14 +6,19 @@
     @for (route of routes; track $index) {
       @if (route.data && !route.redirectTo && route.path !== '**') {
         <li>
-          <a [class.selected]="currentRouteUrl === '/' + route.path" [routerLink]="route.path">
+          <a
+            [class.selected]="
+              currentRouteUrl === '/' + route.path || currentRouteUrl.startsWith('/' + route.path + '/')
+            "
+            [routerLink]="route.path"
+          >
             {{ route.data!['navLabel'] }}
           </a>
         </li>
       }
     }
   </ul>
-  <button>
+  <button routerLink="/people/new">
     <span>+</span>
     Add Person
   </button>

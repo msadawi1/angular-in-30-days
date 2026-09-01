@@ -7,7 +7,6 @@ import { isFuture } from '../common/dates';
 import { ContactLog } from '../contact-logs/contact-log.entity';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { QueryPeopleDto } from './dto/query-people.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
 import { ImportantDate } from './important-date.entity';
 import { Person } from './person.entity';
 
@@ -71,41 +70,6 @@ export class PeopleService {
       );
 
       await this.replaceImportantDates(manager, person.id, dto.importantDates ?? []);
-      return this.reload(manager, person.id);
-    });
-  }
-
-  async update(id: string, dto: UpdatePersonDto): Promise<Person> {
-    const person = await this.findOne(id);
-
-    const phone = dto.phone !== undefined ? dto.phone : person.phone;
-    const email = dto.email !== undefined ? dto.email : person.email;
-    this.assertReachable(phone ?? null, email ?? null);
-
-    if (dto.lastContactDate !== undefined) {
-      this.assertNotFuture(dto.lastContactDate ?? null, 'lastContactDate');
-    }
-
-    Object.assign(person, {
-      ...(dto.name !== undefined && { name: dto.name }),
-      ...(dto.relationshipType !== undefined && { relationshipType: dto.relationshipType }),
-      ...(dto.phone !== undefined && { phone: dto.phone ?? null }),
-      ...(dto.email !== undefined && { email: dto.email ?? null }),
-      ...(dto.customCadenceDays !== undefined && {
-        customCadenceDays: dto.customCadenceDays ?? null,
-      }),
-      ...(dto.notes !== undefined && { notes: dto.notes ?? null }),
-      ...(dto.lastContactDate !== undefined && {
-        lastContactDate: dto.lastContactDate ?? null,
-      }),
-    });
-
-    return this.people.manager.transaction(async (manager) => {
-      await manager.getRepository(Person).save(person);
-
-      if (dto.importantDates !== undefined) {
-        await this.replaceImportantDates(manager, person.id, dto.importantDates);
-      }
       return this.reload(manager, person.id);
     });
   }

@@ -4,6 +4,7 @@ import { apiUrlToken } from '../tokens/app-config.token';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { Relationship } from '../models/relationship.model';
+import { relationshipBaselineToken } from '../tokens/relationship-baseline.token';
 
 export type UpdateCadenceBody = {
   overrides: Record<Relationship, number>;
@@ -17,6 +18,7 @@ export class CadenceConfigService {
   private userCadenceConfig = signal<CadenceConfig | undefined>(undefined);
   private readonly API_URL = inject(apiUrlToken);
   private httpClient = inject(HttpClient);
+  private defaultCadence = inject(relationshipBaselineToken);
 
   loadedUserCadenceConfig = this.userCadenceConfig.asReadonly();
 
@@ -41,6 +43,23 @@ export class CadenceConfigService {
       .put<UpdateCadenceBody['overrides']>(`${this.API_URL}/config/cadences`, {
         overrides: fullOverrides,
         applyToExisting: updateExisting,
+      })
+      .pipe(
+        tap({
+          next: (updatedConfig) => {
+            return this.userCadenceConfig.set(updatedConfig);
+          },
+        }),
+      );
+  }
+
+  resetToDefault() {
+    return this.httpClient
+      .put<UpdateCadenceBody['overrides']>(`${this.API_URL}/config/cadences`, {
+        overrides: Object.fromEntries(
+          this.defaultCadence.map((item) => [item.value, item.defaultCadenceDays]),
+        ),
+        applyToExisting: false,
       })
       .pipe(
         tap({

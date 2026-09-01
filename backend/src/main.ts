@@ -15,7 +15,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.enableCors({
     origin: config.getOrThrow<string>('corsOrigin'),
-    allowedHeaders: ['Content-Type', 'X-Api-Key'],
+    allowedHeaders: ['Content-Type'],
   });
 
   const port = config.getOrThrow<number>('port');

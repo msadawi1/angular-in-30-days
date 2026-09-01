@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Person } from '../models/person.model';
+import { CreatePersonPayload, Person } from '../models/person.model';
 import { HttpClient } from '@angular/common/http';
 import { apiUrlToken } from '../tokens/app-config.token';
 import { tap } from 'rxjs';
@@ -29,6 +29,16 @@ export class PeopleService {
 
   loadPerson(id: Person['id']) {
     return this.httpClient.get<Person>(`${this.API_URL}/people/${id}`);
+  }
+
+  createPerson(payload: CreatePersonPayload) {
+    return this.httpClient.post<Person>(`${this.API_URL}/people`, payload).pipe(
+      tap({
+        next: (person) => {
+          this.people.update((current) => [...(current ?? []), person]);
+        },
+      }),
+    );
   }
 
   deletePerson(id: Person['id']) {

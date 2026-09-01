@@ -2,14 +2,13 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { CardComponent } from '../../shared/ui/card/card.component';
 import { Person } from '../../core/models/person.model';
 import { PersonComponent } from '../../shared/ui/person/person.component';
-import { Relationship } from '../../core/models/relationship.model';
-import { Status } from '../../core/models/status.model';
 import { relationshipBaselineToken } from '../../core/tokens/relationship-baseline.token';
 import { statusOptionsToken } from '../../core/tokens/status.token';
+import { RelationshipLabelPipe } from '../../shared/pipes/relationship-label.pipe';
 
 @Component({
   selector: 'app-people-list',
-  imports: [CardComponent, PersonComponent],
+  imports: [CardComponent, PersonComponent, RelationshipLabelPipe],
   templateUrl: './people-list.component.html',
   styleUrl: './people-list.component.css',
 })

@@ -17,3 +17,11 @@ export interface Person {
   createdAt: string; // ISO datetime
   updatedAt: string; // ISO datetime
 }
+
+/** Payload for POST /people — server assigns id/status/dueInDays/timestamps. */
+export type CreatePersonPayload = Pick<
+  Person,
+  'name' | 'relationshipType' | 'customCadenceDays' | 'email' | 'phone' | 'notes' | 'lastContactDate'
+> & {
+  importantDates: Pick<ImportantDate, 'label' | 'date'>[];
+};

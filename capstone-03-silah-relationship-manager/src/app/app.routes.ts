@@ -4,6 +4,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { PeopleComponent } from './people/people.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ProfileComponent } from './profile/profile.component';
+import { NewPersonComponent } from './people/new-person/new-person.component';
 
 export const routes: Routes = [
   {
@@ -19,8 +20,12 @@ export const routes: Routes = [
     data: { navLabel: 'People' },
   },
   {
+    path: 'people/new',
+    component: NewPersonComponent,
+  },
+  {
     path: 'people/:id',
-    component: ProfileComponent, // TODO: replace with real profile page
+    component: ProfileComponent,
   },
   {
     path: 'settings',

@@ -8,6 +8,10 @@
         </div>
         <p class="entry-note">{{ log.notes ?? 'No notes recorded.' }}</p>
       </li>
+    } @empty {
+      <p style="margin: 0; color: var(--color-ink-muted);">
+        You have not contacted this person yet.
+      </p>
     }
   </ol>
 </app-card>

@@ -1,7 +1,26 @@
 <h2>Settings</h2>
 
 <section>
-  <h4>Contact Frequency</h4>
+  <div class="section-header">
+    <h4>Contact Frequency</h4>
+    <button class="reset-btn" type="button" (click)="onResetDefaults()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="14"
+        height="14"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+      </svg>
+      <span>Reset to defaults</span>
+    </button>
+  </div>
   <p class="info">Set the period of time between each contact reminder for any relationship.</p>
   @if (cadenceConfig(); as config) {
     <app-cadence-settings [cadenceConfig]="config" />

@@ -22,14 +22,13 @@ npm run start:dev   # http://localhost:3000/api
 `npm run build` then `npm run start:prod` for the compiled version.
 
 Config is read from the environment, all with working defaults — see
-`.env.example`. `PORT=3000`, `API_KEY=silah-dev-key`, `DATABASE_PATH=silah.sqlite`,
+`.env.example`. `PORT=3000`, `DATABASE_PATH=silah.sqlite`,
 `CORS_ORIGIN=http://localhost:4200`.
 
 ## Auth
 
-Every `/api` route except `/api/health` requires `X-Api-Key`. Per spec NFR-1 this
-is a placeholder, not security — it exists so the client has an interceptor
-concern to implement without dragging a whole login flow into v1.
+None. Spec NFR-1's placeholder `X-Api-Key` guard was removed — single user,
+single device, not worth the extra moving part in v1.
 
 ## Endpoints
 
@@ -40,12 +39,11 @@ concern to implement without dragging a whole login flow into v1.
 | `POST` | `/api/people` | 201 with the created person |
 | `GET` | `/api/people/check-name` | `?name=&excludeId=` → `{ exists }` |
 | `GET` | `/api/people/:id` | |
-| `PATCH` | `/api/people/:id` | Partial; sending `importantDates` replaces the whole list |
 | `DELETE` | `/api/people/:id` | 204, cascades logs and important dates |
 | `GET` | `/api/people/:id/logs` | Newest first |
 | `POST` | `/api/people/:id/logs` | `{ type, date?, notes? }`; date defaults to today |
 | `DELETE` | `/api/logs/:id` | Returns the person with `lastContactDate` recomputed |
-| `GET` | `/api/config/cadences` | User overrides only, never merged with the factory table |
+| `GET` | `/api/config/cadences` | Full six-type map — factory rows are seeded on boot, so this is never partial |
 | `GET` | `/api/config/cadences/usage` | Per-type count of active people still on the default (FR-5.4) |
 | `PUT` | `/api/config/cadences` | `{ overrides, applyToExisting? }`; replaces the whole map |
 | `DELETE` | `/api/config/cadences` | Reset to factory (FR-5.6) |
@@ -74,13 +72,15 @@ body paths so a form can map them straight onto controls.
 - Deleting a log rewinds `lastContactDate` to the newest remaining log, or
   `null` when none is left (FR-2.5).
 - Future dates are rejected on contact logs and on `lastContactDate`.
-- A person must have a phone or an email (FR-3.4), checked on create and against
-  the merged result on PATCH — so you cannot strip both in two requests.
+- A person must have a phone or an email (FR-3.4), checked on create.
 - Deleting a person deletes their logs and important dates.
 - Unknown body keys are rejected rather than ignored.
 
-It does **not** compute status. That is client-side derived state per spec §2.3,
-which is why `GET /api/people` has no `status` field.
+Every person resource also carries `status` and `dueInDays`, computed server-side
+from the same §2.3 algorithm using the current effective cadence. This is a
+convenience, not the source of truth: the client still runs its own `computed()`
+chain (spec §4.2) so a local, unsaved cadence-settings edit recomputes statuses
+immediately (FR-5.7) without waiting on a round trip.
 
 ### Deviation: no `initialContactEstimate`
 

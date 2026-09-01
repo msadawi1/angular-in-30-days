@@ -7,14 +7,12 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
-  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CheckNameDto } from './dto/check-name.dto';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { QueryPeopleDto } from './dto/query-people.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
 import { PeopleService } from './people.service';
 import { PersonView } from './person-view';
 import { PersonViewService } from './person-view.service';
@@ -45,14 +43,6 @@ export class PeopleController {
   @Post()
   async create(@Body() dto: CreatePersonDto): Promise<PersonView> {
     return this.view.toView(await this.people.create(dto));
-  }
-
-  @Patch(':id')
-  async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdatePersonDto,
-  ): Promise<PersonView> {
-    return this.view.toView(await this.people.update(id, dto));
   }
 
   @Delete(':id')
