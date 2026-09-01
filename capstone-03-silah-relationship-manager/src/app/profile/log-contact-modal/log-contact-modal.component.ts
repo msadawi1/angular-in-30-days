@@ -12,7 +12,7 @@ import { Person } from '../../core/models/person.model';
   styleUrl: './log-contact-modal.component.css',
 })
 export class LogContactModalComponent {
-  personId = input.required<Person['id']>();
+  person = input.required<Person>();
 
   form = new FormGroup({
     method: new FormControl<ContactType>('call', {

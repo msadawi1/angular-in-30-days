@@ -1,8 +1,8 @@
 <header appHeader></header>
 <main>
   <router-outlet></router-outlet>
-  @if (personId(); as personId) {
-    <app-log-contact-modal [personId]="personId" />
+  @if (person(); as person) {
+    <app-log-contact-modal [person]="person" />
   }
 </main>
 <footer appFooter></footer>

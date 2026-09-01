@@ -15,5 +15,5 @@ export class AppComponent {
   title = 'Silah - Bring People Closer';
 
   private contactLogService = inject(ContactLogService);
-  personId = this.contactLogService.targetPersonId;
+  person = this.contactLogService.targetPerson;
 }

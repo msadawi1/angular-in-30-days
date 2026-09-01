@@ -46,6 +46,6 @@ export class PersonComponent {
   onLogContact(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.contactLogService.toggleLogContact(this.person().id);
+    this.contactLogService.toggleLogContact(this.person());
   }
 }

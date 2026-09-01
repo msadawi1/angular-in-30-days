@@ -59,6 +59,6 @@ export class ProfileOverviewComponent {
   isCustomCadence = computed(() => this.person().customCadenceDays !== null);
 
   onLogContact() {
-    this.contactLogService.toggleLogContact(this.person().id);
+    this.contactLogService.toggleLogContact(this.person());
   }
 }

@@ -9,8 +9,8 @@ import { ContactLog } from '../models/contact-log.model';
   providedIn: 'root',
 })
 export class ContactLogService {
-  private personId = signal<Person['id'] | null>(null);
-  targetPersonId = this.personId.asReadonly();
+  private targetPersonSignal = signal<Person | null>(null);
+  targetPerson = this.targetPersonSignal.asReadonly();
 
   /** null = not loaded yet for the current person; distinct from an empty history. */
   private logs = signal<ContactLog[] | null>(null);
@@ -27,11 +27,11 @@ export class ContactLogService {
 
   addContactLogToPerson(contactLog: Pick<ContactLog, 'type' | 'date' | 'notes'>) {
     return this.httpClient
-      .post<ContactLog>(`${this.API_URL}/people/${this.targetPersonId() ?? ''}/logs`, contactLog)
+      .post<ContactLog>(`${this.API_URL}/people/${this.targetPerson()?.id ?? ''}/logs`, contactLog)
       .pipe(tap((created) => this.logs.update((current) => [created, ...(current ?? [])])));
   }
 
-  toggleLogContact(personId: Person['id'] | null) {
-    this.personId.set(personId);
+  toggleLogContact(person: Person | null) {
+    this.targetPersonSignal.set(person);
   }
 }
